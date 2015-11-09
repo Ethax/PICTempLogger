@@ -18,4 +18,12 @@ void Timer_initialize();
  */
 void Timer_handleInterrupt();
 
+/*
+  struct Time
+  getTime, setTime, timeToString
+*/
+
+extern void Timer_elapsedSecondEvent();
+extern void Timer_elapsedMinuteEvent();
+
 #endif /* INC_TIMER_H_ */

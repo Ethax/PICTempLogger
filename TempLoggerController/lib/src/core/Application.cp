@@ -1,4 +1,5 @@
-#line 1 "C:/Projects/PICTempLogger/TempLoggerController/app/src/Main.c"
+#line 1 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/core/Application.c"
+#line 1 "c:/projects/pictemplogger/temploggercontroller/lib/inc/core/application.h"
 #line 1 "c:/projects/pictemplogger/temploggercontroller/lib/inc/common.h"
 #line 1 "c:/program files (x86)/mikroelektronika/mikroc pro for pic/include/built_in.h"
 #line 1 "c:/program files (x86)/mikroelektronika/mikroc pro for pic/include/stdint.h"
@@ -48,23 +49,6 @@ typedef unsigned long int uintmax_t;
 
 
  typedef char _Bool;
-#line 1 "c:/projects/pictemplogger/temploggercontroller/lib/inc/timer/timer.h"
-#line 1 "c:/projects/pictemplogger/temploggercontroller/lib/inc/common.h"
-#line 10 "c:/projects/pictemplogger/temploggercontroller/lib/inc/timer/timer.h"
-void Timer_initialize();
-#line 19 "c:/projects/pictemplogger/temploggercontroller/lib/inc/timer/timer.h"
-void Timer_handleInterrupt();
-
-extern void Timer_elapsedSecondEvent();
-extern void Timer_elapsedMinuteEvent();
-#line 1 "c:/projects/pictemplogger/temploggercontroller/lib/inc/serialcomm/serial.h"
-#line 1 "c:/projects/pictemplogger/temploggercontroller/lib/inc/common.h"
-#line 6 "c:/projects/pictemplogger/temploggercontroller/lib/inc/serialcomm/serial.h"
-void Serial_initialize();
-
-void Serial_handleInterrupt();
-#line 1 "c:/projects/pictemplogger/temploggercontroller/lib/inc/core/application.h"
-#line 1 "c:/projects/pictemplogger/temploggercontroller/lib/inc/common.h"
 #line 17 "c:/projects/pictemplogger/temploggercontroller/lib/inc/core/application.h"
 typedef void (*EventHandler)(void);
 #line 27 "c:/projects/pictemplogger/temploggercontroller/lib/inc/core/application.h"
@@ -84,18 +68,61 @@ void Application_dispatchEvent(EventHandler handler);
 void Application_handleEvents();
 #line 68 "c:/projects/pictemplogger/temploggercontroller/lib/inc/core/application.h"
 void Application_run();
-#line 17 "C:/Projects/PICTempLogger/TempLoggerController/app/src/Main.c"
-void interrupt() {
+#line 1 "c:/projects/pictemplogger/temploggercontroller/lib/inc/timer/timer.h"
+#line 1 "c:/projects/pictemplogger/temploggercontroller/lib/inc/common.h"
+#line 10 "c:/projects/pictemplogger/temploggercontroller/lib/inc/timer/timer.h"
+void Timer_initialize();
+#line 19 "c:/projects/pictemplogger/temploggercontroller/lib/inc/timer/timer.h"
+void Timer_handleInterrupt();
 
- if(TMR0IF_bit && TMR0IE_bit)
- Timer_handleInterrupt();
-#line 23 "C:/Projects/PICTempLogger/TempLoggerController/app/src/Main.c"
- else if(RC1IF_bit && RC1IE_bit)
- Serial_handleInterrupt();
+extern void Timer_elapsedSecondEvent();
+extern void Timer_elapsedMinuteEvent();
+#line 7 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/core/Application.c"
+struct EventQueue eventQueue = { 0, 0, { 0 }};
+#line 13 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/core/Application.c"
+void Application_initialize() {
+#line 16 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/core/Application.c"
+ TRISA = TRISB = TRISC = TRISD = TRISE = 0xFF;
+ LATA = LATB = LATC = LATD = LATE = 0x00;
+
+
+ ADCON0 = ADCON1 = ADCON2 = 0x00;
+ C1ON_bit = C2ON_bit =  0 ;
+
+
 }
-#line 30 "C:/Projects/PICTempLogger/TempLoggerController/app/src/Main.c"
-void main() {
+#line 30 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/core/Application.c"
+void Application_dispatchEvent(EventHandler handler) {
+ eventQueue.eventHandlers[eventQueue.end] = handler;
+ eventQueue.end = (eventQueue.end + 1) %  10 ;
+}
+#line 39 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/core/Application.c"
+void Application_handleEvents() {
 
- Application_initialize();
- Application_run();
+ if(eventQueue.next == eventQueue.end) return;
+#line 46 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/core/Application.c"
+ if(eventQueue.eventHandlers[eventQueue.next]) {
+ eventQueue.eventHandlers[eventQueue.next]();
+ eventQueue.eventHandlers[eventQueue.next] = 0;
+ }
+
+
+ eventQueue.next = (eventQueue.next + 1) %  10 ;
+}
+#line 59 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/core/Application.c"
+void Application_run() {
+#line 62 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/core/Application.c"
+ IPEN_bit =  0 ;
+ PEIE_bit = GIE_bit =  1 ;
+
+
+ while( 1 ) Application_handleEvents();
+}
+
+void Timer_elapsedSecondEvent() {
+
+}
+
+void Timer_elapsedMinuteEvent() {
+
 }

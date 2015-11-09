@@ -53,6 +53,9 @@ typedef unsigned long int uintmax_t;
 void Timer_initialize();
 #line 19 "c:/projects/pictemplogger/temploggercontroller/lib/inc/timer/timer.h"
 void Timer_handleInterrupt();
+
+extern void Timer_elapsedSecondEvent();
+extern void Timer_elapsedMinuteEvent();
 #line 7 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/timer/Timer.c"
 void Timer_initialize() {
 #line 10 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/timer/Timer.c"

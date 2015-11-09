@@ -200,6 +200,10 @@ anselb
 anselc
 anseld
 ansele
+application_dispatchevent
+application_handleevents
+application_initialize
+application_run
 b0
 b1
 b2
@@ -741,7 +745,10 @@ eeip
 eeip_bit
 eepgd
 eepgd_bit
+end
 equals_double
+eventhandlers
+eventqueue
 f
 fast
 ferr
@@ -1084,6 +1091,7 @@ mul_32x32_u
 mul_8x8_s
 n
 n_bit
+next
 not_a
 not_a_bit
 not_a_ssp1stat_bit
@@ -2034,6 +2042,8 @@ tblptrl
 tblptru
 tgen
 tgen_bit
+timer_elapsedminuteevent
+timer_elapsedsecondevent
 timer_handleinterrupt
 timer_initialize
 tmr0h

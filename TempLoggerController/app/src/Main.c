@@ -1,6 +1,7 @@
 #include <common.h>
 #include <timer/Timer.h>
 #include <serialcomm/Serial.h>
+#include <core/Application.h>
 
 /**
  * A külsõ eszközök huzalozásainak beállítása.
@@ -14,8 +15,11 @@
  * be.
  */
 void interrupt() {
+  /* A TIMER0 túlcsordulására bekövetkezett megszakítás kezelése. */
   if(TMR0IF_bit && TMR0IE_bit)
     Timer_handleInterrupt();
+  /* Az UART fogadó pufferébe érkezett adat hatására bekövetkezett megszakítás
+  kezelése. */
   else if(RC1IF_bit && RC1IE_bit)
     Serial_handleInterrupt();
 }
@@ -24,7 +28,7 @@ void interrupt() {
  * @brief A program futásának kezdõpontja.
  */
 void main() {
-     // Application_initialize();
-     // Application_run();
-     return;
+  /* Az alkalmazás inicializálása és futtatása. */
+  Application_initialize();
+  Application_run();
 }
