@@ -4,5 +4,6 @@
 #include <built_in.h>
 #include <stdint.h>
 #include <stdbool.h>
+#include <stdarg.h>
 
 #endif /* INC_COMMON_H_ */

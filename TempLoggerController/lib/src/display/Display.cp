@@ -1,5 +1,5 @@
-#line 1 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/serialcomm/Serial.c"
-#line 1 "c:/projects/pictemplogger/temploggercontroller/lib/inc/serialcomm/serial.h"
+#line 1 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/display/Display.c"
+#line 1 "c:/projects/pictemplogger/temploggercontroller/lib/inc/display/display.h"
 #line 1 "c:/projects/pictemplogger/temploggercontroller/lib/inc/common.h"
 #line 1 "c:/program files (x86)/mikroelektronika/mikroc pro for pic/include/built_in.h"
 #line 1 "c:/program files (x86)/mikroelektronika/mikroc pro for pic/include/stdint.h"
@@ -56,16 +56,27 @@ typedef unsigned long int uintmax_t;
 
 
 typedef void * va_list[1];
-#line 6 "c:/projects/pictemplogger/temploggercontroller/lib/inc/serialcomm/serial.h"
-void Serial_initialize();
-
-void Serial_handleInterrupt();
-#line 3 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/serialcomm/Serial.c"
-void Serial_initialize() {
-
+#line 10 "c:/projects/pictemplogger/temploggercontroller/lib/inc/display/display.h"
+void Display_initialize();
+#line 16 "c:/projects/pictemplogger/temploggercontroller/lib/inc/display/display.h"
+void Display_writeLine(uint8_t line, char* text);
+#line 7 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/display/Display.c"
+void Display_initialize() {
+ Lcd_Init();
+ Lcd_Cmd(_LCD_CLEAR);
+ Lcd_Cmd(_LCD_CURSOR_OFF);
 }
-
-void Serial_handleInterrupt() {
-
- RC1IF_bit =  0 ;
+#line 17 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/display/Display.c"
+void Display_writeLine(uint8_t line, char* text) {
+#line 20 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/display/Display.c"
+ int fill_length = 16 - strlen(text);
+#line 24 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/display/Display.c"
+ if(line < 2)
+ Lcd_Cmd(_LCD_FIRST_ROW);
+ else
+ Lcd_Cmd(_LCD_SECOND_ROW);
+#line 31 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/display/Display.c"
+ Lcd_Out_CP(text);
+ while(fill_length-- > 0)
+ Lcd_Chr_CP(' ');
 }

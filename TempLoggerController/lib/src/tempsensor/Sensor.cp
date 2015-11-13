@@ -1,5 +1,5 @@
-#line 1 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/serialcomm/Serial.c"
-#line 1 "c:/projects/pictemplogger/temploggercontroller/lib/inc/serialcomm/serial.h"
+#line 1 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/tempsensor/Sensor.c"
+#line 1 "c:/projects/pictemplogger/temploggercontroller/lib/inc/tempsensor/sensor.h"
 #line 1 "c:/projects/pictemplogger/temploggercontroller/lib/inc/common.h"
 #line 1 "c:/program files (x86)/mikroelektronika/mikroc pro for pic/include/built_in.h"
 #line 1 "c:/program files (x86)/mikroelektronika/mikroc pro for pic/include/stdint.h"
@@ -56,16 +56,7 @@ typedef unsigned long int uintmax_t;
 
 
 typedef void * va_list[1];
-#line 6 "c:/projects/pictemplogger/temploggercontroller/lib/inc/serialcomm/serial.h"
-void Serial_initialize();
+#line 6 "c:/projects/pictemplogger/temploggercontroller/lib/inc/tempsensor/sensor.h"
+void Sensor_initialize();
 
-void Serial_handleInterrupt();
-#line 3 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/serialcomm/Serial.c"
-void Serial_initialize() {
-
-}
-
-void Serial_handleInterrupt() {
-
- RC1IF_bit =  0 ;
-}
+float Sensor_getTemperature();

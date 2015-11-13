@@ -1,5 +1,6 @@
 main
 	Application_initialize
+		Timer_initialize
 	Application_run
 		Application_handleEvents
 			____DoIFC
@@ -7,4 +8,7 @@ main
 				Div_16x16_S_L
 interrupt
 	Timer_handleInterrupt
+		Application_dispatchEvent
+			Div_16x16_S
+				Div_16x16_S_L
 	Serial_handleInterrupt

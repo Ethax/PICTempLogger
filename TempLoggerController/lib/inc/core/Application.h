@@ -6,9 +6,10 @@
 /**
  * @brief Az eseménykezelõk várakozási sorának mérete.
  */
-#define EVENT_QUEUE_SIZE 10
+#define EVENT_QUEUE_SIZE 20
 
 /**
+ * @typedef EventHandler
  * @brief Az eseménykezelõkre mutató függvénypointer típusdefiníciója.
  *
  * Az eseménykezelõknek nincs visszatérõ értéke és nem fogadnak semmilyen
@@ -17,14 +18,14 @@
 typedef void (*EventHandler)(void);
 
 /**
- * @struct EventQueue
+ * @typedef EventQueue
  * @brief Az eseménykezelõk várakozási sora.
  *
  * Egy esemény létrejöttekor az eseményhez tartozó eseménykezelõre mutató
  * függvénypointer ebbe a sorba kerül bele, a végrehajtásáról pedig maga az
  * alkalmazás magjában futó végtelen ciklus gondoskodik.
  */
-struct EventQueue {
+typedef struct event_queue_t {
   /**
    * A várakozási sor utolsó elemének sorszáma.
    */
@@ -39,7 +40,7 @@ struct EventQueue {
    * Az eseménykezelõkre mutató függvénypointereket tároló tömb.
    */
   EventHandler eventHandlers[EVENT_QUEUE_SIZE];
-};
+} EventQueue;
 
 /**
  * @brief Inicializálja a mikrovezérlõ I/O portjait, a perifériáit és az
