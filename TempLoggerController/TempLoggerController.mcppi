@@ -20,7 +20,7 @@ Node0=Sources
 Node1=Header Files
 Count=2
 [FILES]
-Count=7
+Count=8
 File0=app\src\Main.c
 File1=lib\src\timer\Timer.c
 File2=lib\src\serialcomm\Serial.c
@@ -28,19 +28,16 @@ File3=lib\src\core\Application.c
 File4=lib\src\display\Display.c
 File5=lib\src\tempsensor\Sensor.c
 File6=lib\src\display\NumberToString.c
+File7=lib\src\alarm\Alarm.c
 [BINARIES]
 Count=0
 [IMAGES]
 Count=0
 ActiveImageIndex=-1
 [OPENED_FILES]
-Count=6
+Count=2
 File0=app\src\Main.c
 File1=lib\src\core\Application.c
-File2=lib\inc\display\Display.h
-File3=lib\src\display\Display.c
-File4=lib\src\tempsensor\Sensor.c
-File5=lib\inc\tempsensor\Sensor.h
 [EEPROM]
 Count=0
 [ACTIVE_COMMENTS_FILES]
@@ -48,7 +45,7 @@ Count=0
 [OTHER_FILES]
 Count=0
 [SEARCH_PATH]
-Count=16
+Count=18
 Path0=C:\Program Files (x86)\Mikroelektronika\mikroC PRO for PIC\defs\
 Path1=C:\Program Files (x86)\Mikroelektronika\mikroC PRO for PIC\uses\P18\
 Path2=C:\Projects\PICTempLogger\TempLoggerController\
@@ -65,16 +62,19 @@ Path12=C:\Projects\PICTempLogger\TempLoggerController\lib\inc\display\
 Path13=C:\Projects\PICTempLogger\TempLoggerController\lib\src\display\
 Path14=C:\Projects\PICTempLogger\TempLoggerController\lib\src\tempsensor\
 Path15=C:\Projects\PICTempLogger\TempLoggerController\lib\inc\tempsensor\
+Path16=C:\Projects\PICTempLogger\TempLoggerController\lib\src\alarm\
+Path17=C:\Projects\PICTempLogger\TempLoggerController\lib\inc\alarm\
 [HEADER_PATH]
-Count=6
+Count=7
 Path0=C:\Projects\PICTempLogger\TempLoggerController\lib\inc\
 Path1=C:\Projects\PICTempLogger\TempLoggerController\lib\inc\timer\
 Path2=C:\Projects\PICTempLogger\TempLoggerController\lib\inc\serialcomm\
 Path3=C:\Projects\PICTempLogger\TempLoggerController\lib\inc\core\
 Path4=C:\Projects\PICTempLogger\TempLoggerController\lib\inc\tempsensor\
 Path5=C:\Projects\PICTempLogger\TempLoggerController\lib\inc\display\
+Path6=C:\Projects\PICTempLogger\TempLoggerController\lib\inc\alarm\
 [HEADERS]
-Count=7
+Count=8
 File0=lib\inc\timer\Timer.h
 File1=lib\inc\common.h
 File2=lib\inc\serialcomm\Serial.h
@@ -82,6 +82,7 @@ File3=lib\inc\core\Application.h
 File4=lib\inc\display\Display.h
 File5=lib\inc\tempsensor\Sensor.h
 File6=lib\inc\display\NumberToString.h
+File7=lib\inc\alarm\Alarm.h
 [PLDS]
 Count=0
 [Useses]

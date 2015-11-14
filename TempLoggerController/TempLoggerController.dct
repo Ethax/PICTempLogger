@@ -107,6 +107,11 @@ adresl
 ahen
 ahen_bit
 ahen_ssp1con3_bit
+alarm_checkconditions
+alarm_clearthreshold
+alarm_initialize
+alarm_playalarmsound
+alarm_setthreshold
 an0
 an0_bit
 an1
@@ -694,9 +699,9 @@ delay_cyc
 dhen
 dhen_bit
 dhen_ssp1con3_bit
+display_clearline
 display_initialize
 display_writeline
-display_writeline_o
 div_16x16_s
 div_16x16_s_l
 div_16x16_u
@@ -968,6 +973,7 @@ irng1
 irng1_bit
 irvst
 irvst_bit
+isalerted
 isalnum
 isalpha
 iscntrl
@@ -976,6 +982,7 @@ isgraph
 islower
 ispunct
 isspace
+isthresholdset
 isupper
 isxdigit
 itrim0
@@ -1423,6 +1430,7 @@ pir2
 pir3
 pir4
 pir5
+playtheimperialmarch
 pllen
 pllen_bit
 pllrdy
@@ -2164,6 +2172,7 @@ tblptrl
 tblptru
 tgen
 tgen_bit
+threshold
 timer_elapsedminuteevent
 timer_elapsedsecondevent
 timer_getsystemtime

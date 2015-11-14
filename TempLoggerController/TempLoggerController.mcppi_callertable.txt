@@ -1,6 +1,5 @@
 main
 	Application_initialize
-		Timer_initialize
 		Display_initialize
 			Lcd_Init
 				Delay_5500us
@@ -9,8 +8,28 @@ main
 				Delay_1us
 				Delay_5500us
 				Delay_50us
+			Lcd_Out
+				Lcd_Cmd
+					Delay_1us
+					Delay_5500us
+					Delay_50us
+				Lcd_Chr_CP
+					Lcd_Cmd
+						Delay_1us
+						Delay_5500us
+						Delay_50us
+		Alarm_initialize
+			Sound_Init
+			Sound_Play
+				Get_Fosc_kHz
+				Mul_32x32_U
+				Div_32x32_U
+				Div_16x16_U
+				Delay_Cyc
+		Timer_initialize
 		Sensor_initialize
 			ADC_Init
+		Alarm_setThreshold
 	Application_run
 		Application_handleEvents
 			____DoIFC

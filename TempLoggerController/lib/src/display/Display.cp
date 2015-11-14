@@ -56,8 +56,10 @@ typedef unsigned char _Bool;
 typedef void * va_list[1];
 #line 10 "c:/projects/pictemplogger/temploggercontroller/lib/inc/display/display.h"
 void Display_initialize();
-#line 16 "c:/projects/pictemplogger/temploggercontroller/lib/inc/display/display.h"
+#line 22 "c:/projects/pictemplogger/temploggercontroller/lib/inc/display/display.h"
 void Display_writeLine(uint8_t line, char* format, ...);
+#line 29 "c:/projects/pictemplogger/temploggercontroller/lib/inc/display/display.h"
+void Display_clearLine(uint8_t line);
 #line 1 "c:/projects/pictemplogger/temploggercontroller/lib/inc/display/numbertostring.h"
 #line 1 "c:/program files (x86)/mikroelektronika/mikroc pro for pic/include/stdint.h"
 #line 1 "c:/program files (x86)/mikroelektronika/mikroc pro for pic/include/stdbool.h"
@@ -70,85 +72,100 @@ void Display_initialize() {
  Lcd_Init();
  Lcd_Cmd(_LCD_CLEAR);
  Lcd_Cmd(_LCD_CURSOR_OFF);
+ Lcd_Out(1, 5, "Ready...");
 }
-#line 18 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/display/Display.c"
-void Display_writeLine_O(uint8_t line, char* text) {
-#line 21 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/display/Display.c"
- int fill_length = 16 - strlen(text);
-#line 25 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/display/Display.c"
- if(line < 2)
- Lcd_Cmd(_LCD_FIRST_ROW);
- else
- Lcd_Cmd(_LCD_SECOND_ROW);
-#line 32 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/display/Display.c"
- Lcd_Out_CP(text);
- while(fill_length-- > 0)
- Lcd_Chr_CP(' ');
-}
-
+#line 19 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/display/Display.c"
 void Display_writeLine(uint8_t line, char* format, ...) {
+ int fill_length = 16;
  char actual_char;
+ char* string_ptr;
  va_list va;
-#line 43 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/display/Display.c"
+#line 27 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/display/Display.c"
  if(line < 2)
  Lcd_Cmd(_LCD_FIRST_ROW);
  else
  Lcd_Cmd(_LCD_SECOND_ROW);
+
 
   *va = (char *)&format + sizeof format ;
  while((actual_char = *(format++))) {
+#line 38 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/display/Display.c"
  if(actual_char == '%') {
  actual_char = *(format++);
  switch(actual_char) {
  case 'a':
- Lcd_Out_CP( (*(*(char* **)va)++) );
+ string_ptr =  (*(*(char* **)va)++) ;
+ Lcd_Out_CP(string_ptr);
  break;
-
  case 'c':
+ fill_length--;
  Lcd_Chr_CP( (*(*(char **)va)++) );
  break;
-
  case 's':
- Lcd_Out_CP(intToString( (*(*(short **)va)++) , 10));
+ string_ptr = intToString( (*(*(short **)va)++) , 10);
+ Lcd_Out_CP(string_ptr);
  break;
-
  case 'i':
- Lcd_Out_CP(intToString( (*(*(int **)va)++) , 10));
+ string_ptr = intToString( (*(*(int **)va)++) , 10);
+ Lcd_Out_CP(string_ptr);
  break;
-
  case 'l':
- Lcd_Out_CP(intToString( (*(*(long **)va)++) , 10));
+ string_ptr = intToString( (*(*(long **)va)++) , 10);
+ Lcd_Out_CP(string_ptr);
  break;
-
  case 'u':
  actual_char = *(format++);
  switch(actual_char) {
  case 's':
- Lcd_Out_CP(intToString( (*(*(unsigned short **)va)++) , 10));
+ string_ptr = intToString( (*(*(unsigned short **)va)++) , 10);
+ Lcd_Out_CP(string_ptr);
  break;
-
  case 'i':
- Lcd_Out_CP(intToString( (*(*(unsigned int **)va)++) , 10));
+ string_ptr = intToString( (*(*(unsigned int **)va)++) , 10);
+ Lcd_Out_CP(string_ptr);
  break;
-
  case 'l':
- Lcd_Out_CP(intToString( (*(*(unsigned long **)va)++) , 10));
+ string_ptr = intToString( (*(*(unsigned long **)va)++) , 10);
+ Lcd_Out_CP(string_ptr);
  break;
  }
  break;
-
  default:
  if(actual_char >= '0' && actual_char <= '9' && *format == 'f') {
- Lcd_Out_CP(floatToString( (*(*(float **)va)++) , actual_char - '0'));
+ string_ptr = floatToString( (*(*(float **)va)++) , actual_char - '0');
+ Lcd_Out_CP(string_ptr);
  format++;
  }
  else {
+ fill_length--;
  Lcd_Chr_CP(actual_char);
  }
  }
+#line 93 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/display/Display.c"
+ if(string_ptr) {
+ fill_length -= strlen(string_ptr);
+ string_ptr = 0;
  }
+ }
+#line 100 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/display/Display.c"
  else {
+ fill_length--;
  Lcd_Chr_CP(actual_char);
  }
  }
+#line 108 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/display/Display.c"
+ while(fill_length-- > 0)
+ Lcd_Chr_CP(' ');
+}
+#line 115 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/display/Display.c"
+void Display_clearLine(uint8_t line) {
+ uint8_t current_char;
+#line 120 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/display/Display.c"
+ if(line < 2)
+ Lcd_Cmd(_LCD_FIRST_ROW);
+ else
+ Lcd_Cmd(_LCD_SECOND_ROW);
+#line 127 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/display/Display.c"
+ for(current_char = 0; current_char < 16; current_char++)
+ Lcd_Chr_CP(' ');
 }

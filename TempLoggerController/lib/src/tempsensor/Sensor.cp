@@ -54,24 +54,26 @@ typedef unsigned char _Bool;
 
 
 typedef void * va_list[1];
-#line 6 "c:/projects/pictemplogger/temploggercontroller/lib/inc/tempsensor/sensor.h"
+#line 13 "c:/projects/pictemplogger/temploggercontroller/lib/inc/tempsensor/sensor.h"
 void Sensor_initialize(const float _vref);
-
+#line 29 "c:/projects/pictemplogger/temploggercontroller/lib/inc/tempsensor/sensor.h"
 float Sensor_getTemperature();
-#line 3 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/tempsensor/Sensor.c"
+#line 6 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/tempsensor/Sensor.c"
 float VREF = 0;
 
 void Sensor_initialize(const float _vref) {
+
  ANSELE = 0x02;
  TRISE1_bit = 1;
-
+#line 15 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/tempsensor/Sensor.c"
  ADC_Init();
  VREF = _vref;
 }
-
+#line 23 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/tempsensor/Sensor.c"
 float Sensor_getTemperature() {
+#line 26 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/tempsensor/Sensor.c"
  unsigned int temp_res = ADC_Get_Sample(6);
+
+
  return ((float)temp_res * VREF) / 10.240;
-
-
 }

@@ -108,26 +108,33 @@ extern void Timer_elapsedMinuteEvent();
 #line 1 "c:/projects/pictemplogger/temploggercontroller/lib/inc/common.h"
 #line 10 "c:/projects/pictemplogger/temploggercontroller/lib/inc/display/display.h"
 void Display_initialize();
-#line 16 "c:/projects/pictemplogger/temploggercontroller/lib/inc/display/display.h"
+#line 22 "c:/projects/pictemplogger/temploggercontroller/lib/inc/display/display.h"
 void Display_writeLine(uint8_t line, char* format, ...);
+#line 29 "c:/projects/pictemplogger/temploggercontroller/lib/inc/display/display.h"
+void Display_clearLine(uint8_t line);
 #line 1 "c:/projects/pictemplogger/temploggercontroller/lib/inc/tempsensor/sensor.h"
 #line 1 "c:/projects/pictemplogger/temploggercontroller/lib/inc/common.h"
-#line 6 "c:/projects/pictemplogger/temploggercontroller/lib/inc/tempsensor/sensor.h"
+#line 13 "c:/projects/pictemplogger/temploggercontroller/lib/inc/tempsensor/sensor.h"
 void Sensor_initialize(const float _vref);
-
+#line 29 "c:/projects/pictemplogger/temploggercontroller/lib/inc/tempsensor/sensor.h"
 float Sensor_getTemperature();
-#line 1 "c:/projects/pictemplogger/temploggercontroller/lib/inc/display/numbertostring.h"
-#line 1 "c:/program files (x86)/mikroelektronika/mikroc pro for pic/include/stdint.h"
-#line 1 "c:/program files (x86)/mikroelektronika/mikroc pro for pic/include/stdbool.h"
-#line 16 "c:/projects/pictemplogger/temploggercontroller/lib/inc/display/numbertostring.h"
-char* intToString(int32_t value, uint8_t base);
-#line 26 "c:/projects/pictemplogger/temploggercontroller/lib/inc/display/numbertostring.h"
-char* floatToString(float value, uint8_t precision);
-#line 13 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/core/Application.c"
+#line 1 "c:/projects/pictemplogger/temploggercontroller/lib/inc/alarm/alarm.h"
+#line 1 "c:/projects/pictemplogger/temploggercontroller/lib/inc/common.h"
+#line 10 "c:/projects/pictemplogger/temploggercontroller/lib/inc/alarm/alarm.h"
+void Alarm_initialize();
+#line 18 "c:/projects/pictemplogger/temploggercontroller/lib/inc/alarm/alarm.h"
+void Alarm_setThreshold(float _threshold);
+#line 23 "c:/projects/pictemplogger/temploggercontroller/lib/inc/alarm/alarm.h"
+void Alarm_clearThreshold();
+#line 37 "c:/projects/pictemplogger/temploggercontroller/lib/inc/alarm/alarm.h"
+ _Bool  Alarm_checkConditions(float _temperature);
+#line 42 "c:/projects/pictemplogger/temploggercontroller/lib/inc/alarm/alarm.h"
+void Alarm_playAlarmSound();
+#line 10 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/core/Application.c"
 EventQueue eventQueue = { 0, 0, { 0 }};
-#line 19 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/core/Application.c"
+#line 16 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/core/Application.c"
 void Application_initialize() {
-#line 22 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/core/Application.c"
+#line 19 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/core/Application.c"
  TRISA = TRISB = TRISC = TRISD = TRISE = 0xFF;
  ANSELA = ANSELB = ANSELC = ANSELD = ANSELE = 0x00;
  SLRCON = LATA = LATB = LATC = LATD = LATE = 0x00;
@@ -137,9 +144,12 @@ void Application_initialize() {
  C1ON_bit = C2ON_bit =  0 ;
 
 
- Timer_initialize();
  Display_initialize();
+ Alarm_initialize();
+ Timer_initialize();
  Sensor_initialize(3.3f);
+
+ Alarm_setThreshold(40.0);
 }
 #line 40 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/core/Application.c"
 void Application_dispatchEvent(EventHandler handler) {
@@ -174,15 +184,23 @@ void Application_run() {
 }
 #line 90 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/core/Application.c"
 void Timer_elapsedSecondEvent() {
-#line 94 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/core/Application.c"
+
+ float actual_temp = Sensor_getTemperature();
+#line 97 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/core/Application.c"
  char* date_str = Timer_timeToString(Timer_getSystemTime());
  char* time_str = strstr(date_str, " ");
  *time_str++ = '\0';
-#line 100 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/core/Application.c"
+#line 103 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/core/Application.c"
  Display_writeLine(1, "%a   [T]", date_str);
- Display_writeLine(2, "%a %2f%cC  ", time_str, Sensor_getTemperature(), 223);
+ Display_writeLine(2, "%a %2f%cC", time_str, actual_temp, 223);
+#line 108 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/core/Application.c"
+ if(Alarm_checkConditions(actual_temp)) {
+ Display_writeLine(1, "     ALARM!");
+ Display_clearLine(2);
+ Alarm_playAlarmSound();
+ }
 }
-#line 107 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/core/Application.c"
+#line 118 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/core/Application.c"
 void Timer_elapsedMinuteEvent() {
 
 }

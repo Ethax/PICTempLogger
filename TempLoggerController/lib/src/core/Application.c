@@ -2,10 +2,7 @@
 #include <timer/Timer.h>
 #include <display/Display.h>
 #include <tempsensor/Sensor.h>
-
-
-#include <display/NumberToString.h>
-
+#include <alarm/Alarm.h>
 
 /*
  * Az eseménykezelõk várakozási sorának deklarálása és inicializálása.
@@ -28,9 +25,12 @@ void Application_initialize() {
   C1ON_bit = C2ON_bit = false;
 
   /* Az alkalmazás moduljainak inicializálása. */
-  Timer_initialize();
   Display_initialize();
+  Alarm_initialize();
+  Timer_initialize();
   Sensor_initialize(3.3f);
+  
+  Alarm_setThreshold(40.0);
 }
 
 /*
@@ -88,6 +88,9 @@ void Application_run() {
  * Kezeli a másodpercenként bekövetkezõ periodikus eseményt.
  */
 void Timer_elapsedSecondEvent() {
+  /* A pillanatnyi hõmérséklet lekérdezése a hõmérõtõl. */
+  float actual_temp = Sensor_getTemperature();
+  
   /* Az aktuális dátum és idõ lekérdezése az idõzítõtõl karakterlánc formájában,
   majd a fogadott karakterlánc szétválasztása dátum és az idõ közötti szóköz
   menén. */
@@ -95,10 +98,18 @@ void Timer_elapsedSecondEvent() {
   char* time_str = strstr(date_str, " ");
   *time_str++ = '\0';
   
-  /* A pillanatnyi hõmérséklet lekérdezése a hõmérõtõl és a korábban lekérdezett
-  dátummal és idõvel együtt a fogadott eredmény megjelenítése kijelzõn. */
+  /* A korábban lekérdezett pillanatnyi hõmérséklet, dátum és idõ megjelenítése
+  kijelzõn. */
   Display_writeLine(1, "%a   [T]", date_str);
-  Display_writeLine(2, "%a %2f%cC  ", time_str, Sensor_getTemperature(), 223);
+  Display_writeLine(2, "%a %2f%cC", time_str, actual_temp, 223);
+
+  /* A riasztás bekapcsolása, amennyiben a pillanatnyi hõmérséklettel együtt a
+  riasztás feltételei teljesültek.*/
+  if(Alarm_checkConditions(actual_temp)) {
+    Display_writeLine(1, "     ALARM!");
+    Display_clearLine(2);
+    Alarm_playAlarmSound();
+  }
 }
 
 /*
