@@ -13,6 +13,6 @@ void Display_initialize();
  * @brief Beállítja az LCD kurzorát a megadott sor elejére és felülírja annak
  * tartalmát.
  */
-void Display_writeLine(uint8_t line, char* text);
+void Display_writeLine(uint8_t line, char* format, ...);
 
 #endif /* INC_DISPLAY_H_ */

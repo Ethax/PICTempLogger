@@ -3,7 +3,7 @@
 
 #include <common.h>
 
-void Sensor_initialize();
+void Sensor_initialize(const float _vref);
 
 float Sensor_getTemperature();
 

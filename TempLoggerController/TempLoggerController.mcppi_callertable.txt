@@ -1,6 +1,16 @@
 main
 	Application_initialize
 		Timer_initialize
+		Display_initialize
+			Lcd_Init
+				Delay_5500us
+				Delay_1us
+			Lcd_Cmd
+				Delay_1us
+				Delay_5500us
+				Delay_50us
+		Sensor_initialize
+			ADC_Init
 	Application_run
 		Application_handleEvents
 			____DoIFC

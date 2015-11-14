@@ -66,14 +66,14 @@ void Timer_handleInterrupt() {
 /*
  * Visszaadja az aktuális dátumot és idõt.
  */
-PICTime* getSystemTime() {
+PICTime* Timer_getSystemTime() {
   return &systemTime;
 }
 
 /*
  * Beállítja az új dátumot és idõt.
  */
-void setSystemTime(PICTime* time_ptr) {
+void Timer_setSystemTime(PICTime* time_ptr) {
   /* A Timer0 túlcsordulására bekövetkezõ megszakítás tiltása és az átadott idõ
   átmásolása a rendszeridõ adatszerkezetébe. */
   TMR0IE_bit = false;
@@ -90,7 +90,7 @@ void setSystemTime(PICTime* time_ptr) {
  * Átalakítja az átadott dátum és idõ adatszerkezetet megjeleníthetõ
  * karakterlánccá a következõ séma szerint: ÉÉÉÉ-HH-NN ÓÓ:PP:MM
  */
-char* timeToString(PICTime* time_ptr) {
+char* Timer_timeToString(PICTime* time_ptr) {
   static char time_str[20];
   uint8_t i = 0;
   

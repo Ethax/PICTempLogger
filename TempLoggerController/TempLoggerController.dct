@@ -696,6 +696,7 @@ dhen_bit
 dhen_ssp1con3_bit
 display_initialize
 display_writeline
+display_writeline_o
 div_16x16_s
 div_16x16_s_l
 div_16x16_u
@@ -793,6 +794,7 @@ ferr2
 ferr2_bit
 fixsign32
 floattostr
+floattostring
 flt0
 flt0_bit
 free
@@ -822,7 +824,6 @@ gcen
 gcen_bit
 gcen_ssp1con2_bit
 get_fosc_khz
-getsystemtime
 gie
 gie_bit
 gie_gieh
@@ -935,6 +936,7 @@ intsrc
 intsrc_bit
 inttohex
 inttostr
+inttostring
 inttostrwithzeros
 iocb
 iocb4
@@ -1742,6 +1744,8 @@ sendb1
 sendb1_bit
 sendb2
 sendb2_bit
+sensor_gettemperature
+sensor_initialize
 serial_handleinterrupt
 serial_initialize
 setfdz32
@@ -1749,7 +1753,6 @@ setfov32
 setfun32
 setiov3224
 setjmp
-setsystemtime
 shorttohex
 shorttostr
 slra
@@ -2163,9 +2166,11 @@ tgen
 tgen_bit
 timer_elapsedminuteevent
 timer_elapsedsecondevent
+timer_getsystemtime
 timer_handleinterrupt
 timer_initialize
-timetostring
+timer_setsystemtime
+timer_timetostring
 tmr0h
 tmr0ie
 tmr0ie_bit
@@ -2477,6 +2482,7 @@ vdirmag
 vdirmag_bit
 vpp
 vpp_bit
+vref
 vrefcon0
 vrefcon1
 vrefcon2

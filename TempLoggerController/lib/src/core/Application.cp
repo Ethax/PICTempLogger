@@ -45,10 +45,8 @@ typedef unsigned int uintptr_t;
 typedef signed long int intmax_t;
 typedef unsigned long int uintmax_t;
 #line 1 "c:/program files (x86)/mikroelektronika/mikroc pro for pic/include/stdbool.h"
-
-
-
- typedef char _Bool;
+#line 10 "c:/program files (x86)/mikroelektronika/mikroc pro for pic/include/stdbool.h"
+typedef unsigned char _Bool;
 #line 1 "c:/program files (x86)/mikroelektronika/mikroc pro for pic/include/stdarg.h"
 
 
@@ -97,11 +95,11 @@ void Timer_initialize();
 #line 61 "c:/projects/pictemplogger/temploggercontroller/lib/inc/timer/timer.h"
 void Timer_handleInterrupt();
 #line 68 "c:/projects/pictemplogger/temploggercontroller/lib/inc/timer/timer.h"
-PICTime* getSystemTime();
+PICTime* Timer_getSystemTime();
 #line 76 "c:/projects/pictemplogger/temploggercontroller/lib/inc/timer/timer.h"
-void setSystemTime(PICTime* time_ptr);
+void Timer_setSystemTime(PICTime* time_ptr);
 #line 85 "c:/projects/pictemplogger/temploggercontroller/lib/inc/timer/timer.h"
-char* timeToString(PICTime* time_ptr);
+char* Timer_timeToString(PICTime* time_ptr);
 #line 91 "c:/projects/pictemplogger/temploggercontroller/lib/inc/timer/timer.h"
 extern void Timer_elapsedSecondEvent();
 #line 97 "c:/projects/pictemplogger/temploggercontroller/lib/inc/timer/timer.h"
@@ -111,12 +109,25 @@ extern void Timer_elapsedMinuteEvent();
 #line 10 "c:/projects/pictemplogger/temploggercontroller/lib/inc/display/display.h"
 void Display_initialize();
 #line 16 "c:/projects/pictemplogger/temploggercontroller/lib/inc/display/display.h"
-void Display_writeLine(uint8_t line, char* text);
-#line 8 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/core/Application.c"
+void Display_writeLine(uint8_t line, char* format, ...);
+#line 1 "c:/projects/pictemplogger/temploggercontroller/lib/inc/tempsensor/sensor.h"
+#line 1 "c:/projects/pictemplogger/temploggercontroller/lib/inc/common.h"
+#line 6 "c:/projects/pictemplogger/temploggercontroller/lib/inc/tempsensor/sensor.h"
+void Sensor_initialize(const float _vref);
+
+float Sensor_getTemperature();
+#line 1 "c:/projects/pictemplogger/temploggercontroller/lib/inc/display/numbertostring.h"
+#line 1 "c:/program files (x86)/mikroelektronika/mikroc pro for pic/include/stdint.h"
+#line 1 "c:/program files (x86)/mikroelektronika/mikroc pro for pic/include/stdbool.h"
+#line 16 "c:/projects/pictemplogger/temploggercontroller/lib/inc/display/numbertostring.h"
+char* intToString(int32_t value, uint8_t base);
+#line 26 "c:/projects/pictemplogger/temploggercontroller/lib/inc/display/numbertostring.h"
+char* floatToString(float value, uint8_t precision);
+#line 13 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/core/Application.c"
 EventQueue eventQueue = { 0, 0, { 0 }};
-#line 14 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/core/Application.c"
+#line 19 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/core/Application.c"
 void Application_initialize() {
-#line 17 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/core/Application.c"
+#line 22 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/core/Application.c"
  TRISA = TRISB = TRISC = TRISD = TRISE = 0xFF;
  ANSELA = ANSELB = ANSELC = ANSELD = ANSELE = 0x00;
  SLRCON = LATA = LATB = LATC = LATD = LATE = 0x00;
@@ -128,21 +139,22 @@ void Application_initialize() {
 
  Timer_initialize();
  Display_initialize();
+ Sensor_initialize(3.3f);
 }
-#line 34 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/core/Application.c"
+#line 40 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/core/Application.c"
 void Application_dispatchEvent(EventHandler handler) {
-#line 37 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/core/Application.c"
+#line 43 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/core/Application.c"
  eventQueue.eventHandlers[eventQueue.end] = handler;
  eventQueue.end = (eventQueue.end + 1) %  20 ;
-#line 43 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/core/Application.c"
+#line 49 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/core/Application.c"
  if(eventQueue.end == eventQueue.next)
  eventQueue.next = (eventQueue.next + 1) %  20 ;
 }
-#line 51 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/core/Application.c"
+#line 57 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/core/Application.c"
 void Application_handleEvents() {
 
  if(eventQueue.next == eventQueue.end) return;
-#line 58 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/core/Application.c"
+#line 64 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/core/Application.c"
  if(eventQueue.eventHandlers[eventQueue.next]) {
  eventQueue.eventHandlers[eventQueue.next]();
  eventQueue.eventHandlers[eventQueue.next] = 0;
@@ -151,26 +163,26 @@ void Application_handleEvents() {
 
  eventQueue.next = (eventQueue.next + 1) %  20 ;
 }
-#line 71 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/core/Application.c"
+#line 77 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/core/Application.c"
 void Application_run() {
-#line 74 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/core/Application.c"
+#line 80 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/core/Application.c"
  IPEN_bit =  0 ;
  PEIE_bit = GIE_bit =  1 ;
 
 
  while( 1 ) Application_handleEvents();
 }
-#line 84 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/core/Application.c"
+#line 90 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/core/Application.c"
 void Timer_elapsedSecondEvent() {
- static int event_num = 0;
- char output[50];
- sprinti(output, "Second event: %d", event_num);
- Display_writeLine(1, output);
-}
 #line 94 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/core/Application.c"
+ char* date_str = Timer_timeToString(Timer_getSystemTime());
+ char* time_str = strstr(date_str, " ");
+ *time_str++ = '\0';
+#line 100 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/core/Application.c"
+ Display_writeLine(1, "%a   [T]", date_str);
+ Display_writeLine(2, "%a %2f%cC  ", time_str, Sensor_getTemperature(), 223);
+}
+#line 107 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/core/Application.c"
 void Timer_elapsedMinuteEvent() {
- static int event_num = 0;
- char output[50];
- sprinti(output, "Minute event: %d", event_num);
- Display_writeLine(2, output);
+
 }

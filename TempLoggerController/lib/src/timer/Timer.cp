@@ -45,10 +45,8 @@ typedef unsigned int uintptr_t;
 typedef signed long int intmax_t;
 typedef unsigned long int uintmax_t;
 #line 1 "c:/program files (x86)/mikroelektronika/mikroc pro for pic/include/stdbool.h"
-
-
-
- typedef char _Bool;
+#line 10 "c:/program files (x86)/mikroelektronika/mikroc pro for pic/include/stdbool.h"
+typedef unsigned char _Bool;
 #line 1 "c:/program files (x86)/mikroelektronika/mikroc pro for pic/include/stdarg.h"
 
 
@@ -76,11 +74,11 @@ void Timer_initialize();
 #line 61 "c:/projects/pictemplogger/temploggercontroller/lib/inc/timer/timer.h"
 void Timer_handleInterrupt();
 #line 68 "c:/projects/pictemplogger/temploggercontroller/lib/inc/timer/timer.h"
-PICTime* getSystemTime();
+PICTime* Timer_getSystemTime();
 #line 76 "c:/projects/pictemplogger/temploggercontroller/lib/inc/timer/timer.h"
-void setSystemTime(PICTime* time_ptr);
+void Timer_setSystemTime(PICTime* time_ptr);
 #line 85 "c:/projects/pictemplogger/temploggercontroller/lib/inc/timer/timer.h"
-char* timeToString(PICTime* time_ptr);
+char* Timer_timeToString(PICTime* time_ptr);
 #line 91 "c:/projects/pictemplogger/temploggercontroller/lib/inc/timer/timer.h"
 extern void Timer_elapsedSecondEvent();
 #line 97 "c:/projects/pictemplogger/temploggercontroller/lib/inc/timer/timer.h"
@@ -149,11 +147,11 @@ void Timer_handleInterrupt() {
  TMR0IF_bit =  0 ;
 }
 #line 69 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/timer/Timer.c"
-PICTime* getSystemTime() {
+PICTime* Timer_getSystemTime() {
  return &systemTime;
 }
 #line 76 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/timer/Timer.c"
-void setSystemTime(PICTime* time_ptr) {
+void Timer_setSystemTime(PICTime* time_ptr) {
 #line 79 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/timer/Timer.c"
  TMR0IE_bit =  0 ;
  memcpy(&systemTime, time_ptr, sizeof(PICTime));
@@ -163,7 +161,7 @@ void setSystemTime(PICTime* time_ptr) {
  TMR0IE_bit =  1 ;
 }
 #line 93 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/timer/Timer.c"
-char* timeToString(PICTime* time_ptr) {
+char* Timer_timeToString(PICTime* time_ptr) {
  static char time_str[20];
  uint8_t i = 0;
 

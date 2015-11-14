@@ -15,23 +15,32 @@ Value=0
 Value=2000
 [EEPROM_DEFINITION]
 Value=
+[EXPANDED_NODES]
+Node0=Sources
+Node1=Header Files
+Count=2
 [FILES]
-Count=6
+Count=7
 File0=app\src\Main.c
 File1=lib\src\timer\Timer.c
 File2=lib\src\serialcomm\Serial.c
 File3=lib\src\core\Application.c
 File4=lib\src\display\Display.c
 File5=lib\src\tempsensor\Sensor.c
+File6=lib\src\display\NumberToString.c
 [BINARIES]
 Count=0
 [IMAGES]
 Count=0
 ActiveImageIndex=-1
 [OPENED_FILES]
-Count=2
+Count=6
 File0=app\src\Main.c
 File1=lib\src\core\Application.c
+File2=lib\inc\display\Display.h
+File3=lib\src\display\Display.c
+File4=lib\src\tempsensor\Sensor.c
+File5=lib\inc\tempsensor\Sensor.h
 [EEPROM]
 Count=0
 [ACTIVE_COMMENTS_FILES]
@@ -40,7 +49,7 @@ Count=0
 Count=0
 [SEARCH_PATH]
 Count=16
-Path0=C:\Program Files (x86)\Mikroelektronika\mikroC PRO for PIC\Defs\
+Path0=C:\Program Files (x86)\Mikroelektronika\mikroC PRO for PIC\defs\
 Path1=C:\Program Files (x86)\Mikroelektronika\mikroC PRO for PIC\uses\P18\
 Path2=C:\Projects\PICTempLogger\TempLoggerController\
 Path3=C:\Projects\PICTempLogger\TempLoggerController\app\src\
@@ -65,13 +74,14 @@ Path3=C:\Projects\PICTempLogger\TempLoggerController\lib\inc\core\
 Path4=C:\Projects\PICTempLogger\TempLoggerController\lib\inc\tempsensor\
 Path5=C:\Projects\PICTempLogger\TempLoggerController\lib\inc\display\
 [HEADERS]
-Count=6
+Count=7
 File0=lib\inc\timer\Timer.h
 File1=lib\inc\common.h
 File2=lib\inc\serialcomm\Serial.h
 File3=lib\inc\core\Application.h
 File4=lib\inc\display\Display.h
 File5=lib\inc\tempsensor\Sensor.h
+File6=lib\inc\display\NumberToString.h
 [PLDS]
 Count=0
 [Useses]
@@ -86,7 +96,8 @@ File6=Conversions
 File7=ADC
 File8=Sprinti
 File9=C_Type
-[EXPANDED_NODES]
-Node0=Sources
-Node1=Header Files
-Count=2
+[EXPANDED NODES]
+Node1=Sources
+Node2=Header Files
+Node3=Output Files
+Count=3

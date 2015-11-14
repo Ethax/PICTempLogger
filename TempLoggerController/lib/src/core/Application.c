@@ -1,6 +1,11 @@
 #include <core/Application.h>
 #include <timer/Timer.h>
 #include <display/Display.h>
+#include <tempsensor/Sensor.h>
+
+
+#include <display/NumberToString.h>
+
 
 /*
  * Az eseménykezelõk várakozási sorának deklarálása és inicializálása.
@@ -25,6 +30,7 @@ void Application_initialize() {
   /* Az alkalmazás moduljainak inicializálása. */
   Timer_initialize();
   Display_initialize();
+  Sensor_initialize(3.3f);
 }
 
 /*
@@ -82,18 +88,22 @@ void Application_run() {
  * Kezeli a másodpercenként bekövetkezõ periodikus eseményt.
  */
 void Timer_elapsedSecondEvent() {
-  static int event_num = 0;
-  char output[50];
-  sprinti(output, "Second event: %d", event_num);
-  Display_writeLine(1, output);
+  /* Az aktuális dátum és idõ lekérdezése az idõzítõtõl karakterlánc formájában,
+  majd a fogadott karakterlánc szétválasztása dátum és az idõ közötti szóköz
+  menén. */
+  char* date_str = Timer_timeToString(Timer_getSystemTime());
+  char* time_str = strstr(date_str, " ");
+  *time_str++ = '\0';
+  
+  /* A pillanatnyi hõmérséklet lekérdezése a hõmérõtõl és a korábban lekérdezett
+  dátummal és idõvel együtt a fogadott eredmény megjelenítése kijelzõn. */
+  Display_writeLine(1, "%a   [T]", date_str);
+  Display_writeLine(2, "%a %2f%cC  ", time_str, Sensor_getTemperature(), 223);
 }
 
 /*
  * Kezeli a percenként bekövetkezõ periodikus eseményt.
  */
 void Timer_elapsedMinuteEvent() {
-  static int event_num = 0;
-  char output[50];
-  sprinti(output, "Minute event: %d", event_num);
-  Display_writeLine(2, output);
+
 }

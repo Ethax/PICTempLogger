@@ -65,7 +65,7 @@ void Timer_handleInterrupt();
  *
  * @return A rendszeridõ adatszerkezetére mutató pointer.
  */
-PICTime* getSystemTime();
+PICTime* Timer_getSystemTime();
 
 /**
  * @brief Beállítja az új dátumot és idõt.
@@ -73,7 +73,7 @@ PICTime* getSystemTime();
  * @param time_ptr A beállítani kívánt dátum és idõ adatszerkezetére mutató
  * pointer.
  */
-void setSystemTime(PICTime* time_ptr);
+void Timer_setSystemTime(PICTime* time_ptr);
 
 /**
  * @brief Átalakítja az átadott dátum és idõ adatszerkezetet megjeleníthetõ
@@ -82,7 +82,7 @@ void setSystemTime(PICTime* time_ptr);
  * @param Az átalakítani kívánt adatszerkezet.
  * @return A karakterlánccá átalakított adatszerkezet.
  */
-char* timeToString(PICTime* time_ptr);
+char* Timer_timeToString(PICTime* time_ptr);
 
 /**
  * @brief A másodpercenként bekövetkezõ periodikus esemény eseménykezelõjének

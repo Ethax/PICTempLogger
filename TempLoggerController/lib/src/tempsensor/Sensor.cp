@@ -45,10 +45,8 @@ typedef unsigned int uintptr_t;
 typedef signed long int intmax_t;
 typedef unsigned long int uintmax_t;
 #line 1 "c:/program files (x86)/mikroelektronika/mikroc pro for pic/include/stdbool.h"
-
-
-
- typedef char _Bool;
+#line 10 "c:/program files (x86)/mikroelektronika/mikroc pro for pic/include/stdbool.h"
+typedef unsigned char _Bool;
 #line 1 "c:/program files (x86)/mikroelektronika/mikroc pro for pic/include/stdarg.h"
 
 
@@ -57,6 +55,23 @@ typedef unsigned long int uintmax_t;
 
 typedef void * va_list[1];
 #line 6 "c:/projects/pictemplogger/temploggercontroller/lib/inc/tempsensor/sensor.h"
-void Sensor_initialize();
+void Sensor_initialize(const float _vref);
 
 float Sensor_getTemperature();
+#line 3 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/tempsensor/Sensor.c"
+float VREF = 0;
+
+void Sensor_initialize(const float _vref) {
+ ANSELE = 0x02;
+ TRISE1_bit = 1;
+
+ ADC_Init();
+ VREF = _vref;
+}
+
+float Sensor_getTemperature() {
+ unsigned int temp_res = ADC_Get_Sample(6);
+ return ((float)temp_res * VREF) / 10.240;
+
+
+}
