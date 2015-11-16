@@ -32,9 +32,9 @@ typedef struct event_queue_t {
   uint8_t end;
   
   /**
-   * A várakozási sor következõ elemények sorszáma.
+   * A várakozási sor elsõ elemények sorszáma.
    */
-  uint8_t next;
+  uint8_t begin;
   
   /**
    * Az eseménykezelõkre mutató függvénypointereket tároló tömb.

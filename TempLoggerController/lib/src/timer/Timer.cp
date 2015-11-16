@@ -92,7 +92,7 @@ typedef struct event_queue_t {
 #line 32 "c:/projects/pictemplogger/temploggercontroller/lib/inc/core/application.h"
  uint8_t end;
 #line 37 "c:/projects/pictemplogger/temploggercontroller/lib/inc/core/application.h"
- uint8_t next;
+ uint8_t begin;
 #line 42 "c:/projects/pictemplogger/temploggercontroller/lib/inc/core/application.h"
  EventHandler eventHandlers[ 20 ];
 } EventQueue;

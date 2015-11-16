@@ -8,7 +8,7 @@ float VREF = 0;
 void Sensor_initialize(const float _vref) {
   /* A mikrovezérlõ RE1 kivezetésének beállítása analóg bemenetté. */
   ANSELE = 0x02;
-  TRISE1_bit = 1;
+  TRISE1_bit = true;
 
   /* Az A/D modul inicializálása és a megadott referenciafeszültség értékének
   eltárolása. */

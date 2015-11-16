@@ -5,7 +5,7 @@
 /*
  * A riasztás küszöbértéke, amit ha meghalad a hõmérséklet bekapcsol a riasztás.
  */
-float Threshold = 0.0f;
+float threshold = 90.0f;
 
 /*
  * A riasztás állapotát jelölõ jelzõbit, ami a folyamatos riasztás meggátolását
@@ -25,51 +25,63 @@ bool isThresholdSet = false;
  */
 void Alarm_initialize() {
   Sound_Init(&PORTC, 2);
-  Sound_Play(880, 1000);
+  Alarm_beep();
 }
 
 /*
  * Beállítja a riasztás küszöbértékét, és egyúttal engedélyezi a riasztást.
  */
 void Alarm_setThreshold(float _threshold) {
-  Threshold = _threshold;
+  threshold = _threshold;
   isThresholdSet = true;
+}
+
+/*
+ * Visszaadja a riasztás küszöbértékét.
+ */
+float Alarm_getThreshold() {
+  return threshold;
 }
 
 /*
  * Törli a riasztás küszöbértékét, és egyúttal letiltja a riasztást.
  */
 void Alarm_clearThreshold() {
-  Threshold = 0.0f;
+  threshold = 0.0f;
   isThresholdSet = false;
 }
 
 /*
- * Ellenõrzi a riasztás feltételeit és IGAZ értékkel tér vissza, ha a feltételek
- * alapján meg kell kezdeni a riasztást.
+ * Ellenõrzi a riasztás feltételeit és végrehajtja a riasztás eseménykezelõjét,
+ * ha a feltételek alapján meg kell kezdeni a riasztást.
  */
-bool Alarm_checkConditions(float _temperature) {
+void Alarm_checkConditions(float _temperature) {
   /* A riasztáshoz szükséges feltételek vizsgálatának megszakítása, ha a
   riasztás inaktív. */
-  if(!isThresholdSet) return false;
+  if(!isThresholdSet) return;
   
-  /* A riasztás állapotának módosítása a hõmérséklet jelenlegi értéke és a
-  riasztás korábbi állapota alapján és IGAZ érték visszaadása, ha a riasztás
-  feltételei teljesültek. */
-  if(_temperature > Threshold && !isAlerted) {
+  /* A riasztás eseménykezelõjének végrehajtása, ha a hõmérséklet meghaladta a
+  küszöböt és korábban nem történt riasztás, illetve a folyamatos riasztást
+  meggátoló jelzõbit törlése, ha a hõmérséklet a küszöb alá esett. */
+  if(_temperature > threshold && !isAlerted) {
     isAlerted = true;
-    return true;
+    Alarm_thresholdExceededEvent();
   }
-  else if(_temperature <= Threshold && isAlerted) {
+  else if(_temperature <= threshold && isAlerted) {
     isAlerted = false;
   }
-  
-  /* HAMIS érték visszaadása minden olyan esetben, ha a riasztás feltételei nem
-  teljesültek. */
-  return false;
 }
 
-/* Lejátssza a riasztó hangjelzést. */
+/*
+ * Lejátssza a riasztó hangjelzést.
+ */
 void Alarm_playAlarmSound() {
   playTheImperialMarch();
+}
+
+/*
+ * Lead egy egy másodpercig tartó 880Hz-es hangjelzést.
+ */
+void Alarm_beep() {
+  Sound_Play(880, 1000);
 }

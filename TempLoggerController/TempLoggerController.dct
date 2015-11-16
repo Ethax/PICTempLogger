@@ -21,7 +21,6 @@ __low_savestatus
 __low_savewreg
 _ch
 _command
-_doprnti
 _i2c_ack
 _i2c_nack
 _lcd_blink_cursor_on
@@ -107,11 +106,14 @@ adresl
 ahen
 ahen_bit
 ahen_ssp1con3_bit
+alarm_beep
 alarm_checkconditions
 alarm_clearthreshold
+alarm_getthreshold
 alarm_initialize
 alarm_playalarmsound
 alarm_setthreshold
+alarm_thresholdexceededevent
 an0
 an0_bit
 an1
@@ -268,6 +270,7 @@ bclif
 bclif_bit
 bclip
 bclip_bit
+begin
 bf
 bf_bit
 bf_ssp1stat_bit
@@ -402,6 +405,7 @@ c5tsel0
 c5tsel0_bit
 c5tsel1
 c5tsel1_bit
+calculatechecksum
 ccp1
 ccp1_bit
 ccp1as0
@@ -658,6 +662,7 @@ dacr3_bit
 dacr4
 dacr4_bit
 day
+day
 dc
 dc_bit
 dc1b0
@@ -788,6 +793,11 @@ end
 equals_double
 eventhandlers
 eventqueue
+externaleeprom_initialize
+externaleeprom_read
+externaleeprom_readsequence
+externaleeprom_write
+externaleeprom_writerow
 f
 fast
 ferr
@@ -843,6 +853,7 @@ go_done
 go_done_bit
 go_not_done
 go_not_done_bit
+hardwareaddress
 hfiofs
 hfiofs_bit
 hlvdcon
@@ -864,6 +875,7 @@ hlvdl2
 hlvdl2_bit
 hlvdl3
 hlvdl3_bit
+hour
 hour
 i2c1_init
 i2c1_is_idle
@@ -979,6 +991,7 @@ isalpha
 iscntrl
 isdigit
 isgraph
+isloadedalready
 islower
 ispunct
 isspace
@@ -1102,6 +1115,10 @@ lcd_rs
 lcd_rs_direction
 lfiofs
 lfiofs_bit
+logbegin
+logbegin
+logend
+logend
 longint2double
 longinttohex
 longinttostrwithzeros
@@ -1158,6 +1175,8 @@ mfiofs_bit
 mfiosel
 mfiosel_bit
 minute
+minute
+month
 month
 monthslength
 msk0
@@ -1196,7 +1215,6 @@ mul_32x32_u
 mul_8x8_s
 n
 n_bit
-next
 not_a
 not_a_bit
 not_a_ssp1stat_bit
@@ -1662,6 +1680,8 @@ re2
 re2_bit
 re3
 re3_bit
+receivebuffer
+receivecounter
 res032
 ri
 ri_bit
@@ -1742,6 +1762,7 @@ sdo1_bit
 sdo2
 sdo2_bit
 second
+second
 sen
 sen_bit
 sen_ssp1con2_bit
@@ -1754,8 +1775,14 @@ sendb2
 sendb2_bit
 sensor_gettemperature
 sensor_initialize
+serial_getreceiveddata
 serial_handleinterrupt
 serial_initialize
+serial_receivedlogrequestevent
+serial_receivedthresholdsettingevent
+serial_receivedtimesettingevent
+serial_sendacknowledgement
+serial_sendlogentry
 setfdz32
 setfov32
 setfun32
@@ -1810,7 +1837,6 @@ spen1
 spen1_bit
 spen2
 spen2_bit
-sprinti
 srclk0
 srclk0_bit
 srclk1
@@ -1939,6 +1965,12 @@ stkptr4
 stkptr4_bit
 stkunf
 stkunf_bit
+storage_getstoredsettings
+storage_initialize
+storage_readearliestlog
+storage_settingsloadedevent
+storage_storesettings
+storage_writelog
 str1a
 str1a_bit
 str1b
@@ -1996,6 +2028,8 @@ sync1
 sync1_bit
 sync2
 sync2_bit
+systemsettings
+systemtime
 systemtime
 t08bit
 t08bit_bit
@@ -2173,6 +2207,7 @@ tblptru
 tgen
 tgen_bit
 threshold
+threshold
 timer_elapsedminuteevent
 timer_elapsedsecondevent
 timer_getsystemtime
@@ -2302,6 +2337,7 @@ tosh
 tosl
 tosu
 toupper
+transmitbuffer
 trigsel
 trigsel_bit
 trisa
@@ -2538,6 +2574,7 @@ wrerr_bit
 wue
 wue_baud1con_bit
 wue_bit
+year
 year
 z
 z_bit

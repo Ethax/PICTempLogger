@@ -20,16 +20,61 @@ main
 						Delay_50us
 		Alarm_initialize
 			Sound_Init
-			Sound_Play
-				Get_Fosc_kHz
-				Mul_32x32_U
-				Div_32x32_U
-				Div_16x16_U
-				Delay_Cyc
+			Alarm_beep
+				Sound_Play
+					Get_Fosc_kHz
+					Mul_32x32_U
+					Div_32x32_U
+					Div_16x16_U
+					Delay_Cyc
 		Timer_initialize
 		Sensor_initialize
 			ADC_Init
-		Alarm_setThreshold
+		Storage_initialize
+			ExternalEEPROM_initialize
+				I2C1_Init
+			Storage_getStoredSettings
+				ExternalEEPROM_readSequence
+					I2C1_Start
+						I2C1_Is_Idle
+					I2C1_Wr
+					I2C1_Repeated_Start
+					I2C1_Rd
+					calculateChecksum
+					I2C1_Is_Idle
+					I2C1_Stop
+				ExternalEEPROM_read
+					I2C1_Start
+						I2C1_Is_Idle
+					I2C1_Wr
+					I2C1_Repeated_Start
+					I2C1_Rd
+					I2C1_Is_Idle
+					I2C1_Stop
+			Storage_settingsLoadedEvent
+				Storage_getStoredSettings
+					ExternalEEPROM_readSequence
+						I2C1_Start
+							I2C1_Is_Idle
+						I2C1_Wr
+						I2C1_Repeated_Start
+						I2C1_Rd
+						calculateChecksum
+						I2C1_Is_Idle
+						I2C1_Stop
+					ExternalEEPROM_read
+						I2C1_Start
+							I2C1_Is_Idle
+						I2C1_Wr
+						I2C1_Repeated_Start
+						I2C1_Rd
+						I2C1_Is_Idle
+						I2C1_Stop
+				Timer_setSystemTime
+					memcpy
+				Alarm_setThreshold
+		Serial_initialize
+			UART1_Init
 	Application_run
 		Application_handleEvents
 			____DoIFC
@@ -41,3 +86,7 @@ interrupt
 			Div_16x16_S
 				Div_16x16_S_L
 	Serial_handleInterrupt
+		UART1_Read
+		Application_dispatchEvent
+			Div_16x16_S
+				Div_16x16_S_L

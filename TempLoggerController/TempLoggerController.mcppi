@@ -20,7 +20,7 @@ Node0=Sources
 Node1=Header Files
 Count=2
 [FILES]
-Count=8
+Count=10
 File0=app\src\Main.c
 File1=lib\src\timer\Timer.c
 File2=lib\src\serialcomm\Serial.c
@@ -29,15 +29,19 @@ File4=lib\src\display\Display.c
 File5=lib\src\tempsensor\Sensor.c
 File6=lib\src\display\NumberToString.c
 File7=lib\src\alarm\Alarm.c
+File8=lib\src\storage\ExternalEEPROM.c
+File9=lib\src\storage\Storage.c
 [BINARIES]
 Count=0
 [IMAGES]
 Count=0
 ActiveImageIndex=-1
 [OPENED_FILES]
-Count=2
+Count=4
 File0=app\src\Main.c
 File1=lib\src\core\Application.c
+File2=lib\src\serialcomm\Serial.c
+File3=lib\inc\serialcomm\Serial.h
 [EEPROM]
 Count=0
 [ACTIVE_COMMENTS_FILES]
@@ -45,7 +49,7 @@ Count=0
 [OTHER_FILES]
 Count=0
 [SEARCH_PATH]
-Count=18
+Count=20
 Path0=C:\Program Files (x86)\Mikroelektronika\mikroC PRO for PIC\defs\
 Path1=C:\Program Files (x86)\Mikroelektronika\mikroC PRO for PIC\uses\P18\
 Path2=C:\Projects\PICTempLogger\TempLoggerController\
@@ -64,8 +68,10 @@ Path14=C:\Projects\PICTempLogger\TempLoggerController\lib\src\tempsensor\
 Path15=C:\Projects\PICTempLogger\TempLoggerController\lib\inc\tempsensor\
 Path16=C:\Projects\PICTempLogger\TempLoggerController\lib\src\alarm\
 Path17=C:\Projects\PICTempLogger\TempLoggerController\lib\inc\alarm\
+Path18=C:\Projects\PICTempLogger\TempLoggerController\lib\src\storage\
+Path19=C:\Projects\PICTempLogger\TempLoggerController\lib\inc\storage\
 [HEADER_PATH]
-Count=7
+Count=8
 Path0=C:\Projects\PICTempLogger\TempLoggerController\lib\inc\
 Path1=C:\Projects\PICTempLogger\TempLoggerController\lib\inc\timer\
 Path2=C:\Projects\PICTempLogger\TempLoggerController\lib\inc\serialcomm\
@@ -73,8 +79,9 @@ Path3=C:\Projects\PICTempLogger\TempLoggerController\lib\inc\core\
 Path4=C:\Projects\PICTempLogger\TempLoggerController\lib\inc\tempsensor\
 Path5=C:\Projects\PICTempLogger\TempLoggerController\lib\inc\display\
 Path6=C:\Projects\PICTempLogger\TempLoggerController\lib\inc\alarm\
+Path7=C:\Projects\PICTempLogger\TempLoggerController\lib\inc\storage\
 [HEADERS]
-Count=8
+Count=10
 File0=lib\inc\timer\Timer.h
 File1=lib\inc\common.h
 File2=lib\inc\serialcomm\Serial.h
@@ -83,10 +90,12 @@ File4=lib\inc\display\Display.h
 File5=lib\inc\tempsensor\Sensor.h
 File6=lib\inc\display\NumberToString.h
 File7=lib\inc\alarm\Alarm.h
+File8=lib\inc\storage\ExternalEEPROM.h
+File9=lib\inc\storage\Storage.h
 [PLDS]
 Count=0
 [Useses]
-Count=10
+Count=9
 File0=C_String
 File1=I2C
 File2=UART
@@ -95,8 +104,7 @@ File4=Lcd_Constants
 File5=Sound
 File6=Conversions
 File7=ADC
-File8=Sprinti
-File9=C_Type
+File8=C_Type
 [EXPANDED NODES]
 Node1=Sources
 Node2=Header Files

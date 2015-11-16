@@ -1538,16 +1538,8 @@ _Alarm_initialize:
 	MOVLW       2
 	MOVWF       FARG_Sound_Init_snd_pin+0 
 	CALL        _Sound_Init+0, 0
-;Alarm.c,28 :: 		Sound_Play(880, 1000);
-	MOVLW       112
-	MOVWF       FARG_Sound_Play_freq_in_hz+0 
-	MOVLW       3
-	MOVWF       FARG_Sound_Play_freq_in_hz+1 
-	MOVLW       232
-	MOVWF       FARG_Sound_Play_duration_ms+0 
-	MOVLW       3
-	MOVWF       FARG_Sound_Play_duration_ms+1 
-	CALL        _Sound_Play+0, 0
+;Alarm.c,28 :: 		Alarm_beep();
+	CALL        _Alarm_beep+0, 0
 ;Alarm.c,29 :: 		}
 L_end_Alarm_initialize:
 	RETURN      0
@@ -1556,15 +1548,15 @@ L_end_Alarm_initialize:
 _Alarm_setThreshold:
 
 ;Alarm.c,34 :: 		void Alarm_setThreshold(float _threshold) {
-;Alarm.c,35 :: 		Threshold = _threshold;
+;Alarm.c,35 :: 		threshold = _threshold;
 	MOVF        FARG_Alarm_setThreshold__threshold+0, 0 
-	MOVWF       _Threshold+0 
+	MOVWF       _threshold+0 
 	MOVF        FARG_Alarm_setThreshold__threshold+1, 0 
-	MOVWF       _Threshold+1 
+	MOVWF       _threshold+1 
 	MOVF        FARG_Alarm_setThreshold__threshold+2, 0 
-	MOVWF       _Threshold+2 
+	MOVWF       _threshold+2 
 	MOVF        FARG_Alarm_setThreshold__threshold+3, 0 
-	MOVWF       _Threshold+3 
+	MOVWF       _threshold+3 
 ;Alarm.c,36 :: 		isThresholdSet = true;
 	MOVLW       1
 	MOVWF       _isThresholdSet+0 
@@ -1573,32 +1565,48 @@ L_end_Alarm_setThreshold:
 	RETURN      0
 ; end of _Alarm_setThreshold
 
+_Alarm_getThreshold:
+
+;Alarm.c,42 :: 		float Alarm_getThreshold() {
+;Alarm.c,43 :: 		return threshold;
+	MOVF        _threshold+0, 0 
+	MOVWF       R0 
+	MOVF        _threshold+1, 0 
+	MOVWF       R1 
+	MOVF        _threshold+2, 0 
+	MOVWF       R2 
+	MOVF        _threshold+3, 0 
+	MOVWF       R3 
+;Alarm.c,44 :: 		}
+L_end_Alarm_getThreshold:
+	RETURN      0
+; end of _Alarm_getThreshold
+
 _Alarm_clearThreshold:
 
-;Alarm.c,42 :: 		void Alarm_clearThreshold() {
-;Alarm.c,43 :: 		Threshold = 0.0f;
-	CLRF        _Threshold+0 
-	CLRF        _Threshold+1 
-	CLRF        _Threshold+2 
-	CLRF        _Threshold+3 
-;Alarm.c,44 :: 		isThresholdSet = false;
+;Alarm.c,49 :: 		void Alarm_clearThreshold() {
+;Alarm.c,50 :: 		threshold = 0.0f;
+	CLRF        _threshold+0 
+	CLRF        _threshold+1 
+	CLRF        _threshold+2 
+	CLRF        _threshold+3 
+;Alarm.c,51 :: 		isThresholdSet = false;
 	CLRF        _isThresholdSet+0 
-;Alarm.c,45 :: 		}
+;Alarm.c,52 :: 		}
 L_end_Alarm_clearThreshold:
 	RETURN      0
 ; end of _Alarm_clearThreshold
 
 _Alarm_checkConditions:
 
-;Alarm.c,51 :: 		bool Alarm_checkConditions(float _temperature) {
-;Alarm.c,54 :: 		if(!isThresholdSet) return false;
+;Alarm.c,58 :: 		void Alarm_checkConditions(float _temperature) {
+;Alarm.c,61 :: 		if(!isThresholdSet) return;
 	MOVF        _isThresholdSet+0, 1 
 	BTFSS       STATUS+0, 2 
 	GOTO        L_Alarm_checkConditions70
-	CLRF        R0 
 	GOTO        L_end_Alarm_checkConditions
 L_Alarm_checkConditions70:
-;Alarm.c,59 :: 		if(_temperature > Threshold && !isAlerted) {
+;Alarm.c,66 :: 		if(_temperature > threshold && !isAlerted) {
 	MOVF        FARG_Alarm_checkConditions__temperature+0, 0 
 	MOVWF       R4 
 	MOVF        FARG_Alarm_checkConditions__temperature+1, 0 
@@ -1607,13 +1615,13 @@ L_Alarm_checkConditions70:
 	MOVWF       R6 
 	MOVF        FARG_Alarm_checkConditions__temperature+3, 0 
 	MOVWF       R7 
-	MOVF        _Threshold+0, 0 
+	MOVF        _threshold+0, 0 
 	MOVWF       R0 
-	MOVF        _Threshold+1, 0 
+	MOVF        _threshold+1, 0 
 	MOVWF       R1 
-	MOVF        _Threshold+2, 0 
+	MOVF        _threshold+2, 0 
 	MOVWF       R2 
-	MOVF        _Threshold+3, 0 
+	MOVF        _threshold+3, 0 
 	MOVWF       R3 
 	CALL        _Compare_Double+0, 0
 	MOVLW       1
@@ -1627,16 +1635,15 @@ L_Alarm_checkConditions70:
 	BTFSS       STATUS+0, 2 
 	GOTO        L_Alarm_checkConditions73
 L__Alarm_checkConditions79:
-;Alarm.c,60 :: 		isAlerted = true;
+;Alarm.c,67 :: 		isAlerted = true;
 	MOVLW       1
 	MOVWF       _isAlerted+0 
-;Alarm.c,61 :: 		return true;
-	MOVLW       1
-	MOVWF       R0 
-	GOTO        L_end_Alarm_checkConditions
-;Alarm.c,62 :: 		}
+;Alarm.c,68 :: 		Alarm_thresholdExceededEvent();
+	CALL        _Alarm_thresholdExceededEvent+0, 0
+;Alarm.c,69 :: 		}
+	GOTO        L_Alarm_checkConditions74
 L_Alarm_checkConditions73:
-;Alarm.c,63 :: 		else if(_temperature <= Threshold && isAlerted) {
+;Alarm.c,70 :: 		else if(_temperature <= threshold && isAlerted) {
 	MOVF        FARG_Alarm_checkConditions__temperature+0, 0 
 	MOVWF       R4 
 	MOVF        FARG_Alarm_checkConditions__temperature+1, 0 
@@ -1645,13 +1652,13 @@ L_Alarm_checkConditions73:
 	MOVWF       R6 
 	MOVF        FARG_Alarm_checkConditions__temperature+3, 0 
 	MOVWF       R7 
-	MOVF        _Threshold+0, 0 
+	MOVF        _threshold+0, 0 
 	MOVWF       R0 
-	MOVF        _Threshold+1, 0 
+	MOVF        _threshold+1, 0 
 	MOVWF       R1 
-	MOVF        _Threshold+2, 0 
+	MOVF        _threshold+2, 0 
 	MOVWF       R2 
-	MOVF        _Threshold+3, 0 
+	MOVF        _threshold+3, 0 
 	MOVWF       R3 
 	CALL        _Compare_Double+0, 0
 	MOVLW       0
@@ -1665,23 +1672,40 @@ L_Alarm_checkConditions73:
 	BTFSC       STATUS+0, 2 
 	GOTO        L_Alarm_checkConditions77
 L__Alarm_checkConditions78:
-;Alarm.c,64 :: 		isAlerted = false;
+;Alarm.c,71 :: 		isAlerted = false;
 	CLRF        _isAlerted+0 
-;Alarm.c,65 :: 		}
+;Alarm.c,72 :: 		}
 L_Alarm_checkConditions77:
-;Alarm.c,69 :: 		return false;
-	CLRF        R0 
-;Alarm.c,70 :: 		}
+L_Alarm_checkConditions74:
+;Alarm.c,73 :: 		}
 L_end_Alarm_checkConditions:
 	RETURN      0
 ; end of _Alarm_checkConditions
 
 _Alarm_playAlarmSound:
 
-;Alarm.c,73 :: 		void Alarm_playAlarmSound() {
-;Alarm.c,74 :: 		playTheImperialMarch();
+;Alarm.c,78 :: 		void Alarm_playAlarmSound() {
+;Alarm.c,79 :: 		playTheImperialMarch();
 	CALL        _playTheImperialMarch+0, 0
-;Alarm.c,75 :: 		}
+;Alarm.c,80 :: 		}
 L_end_Alarm_playAlarmSound:
 	RETURN      0
 ; end of _Alarm_playAlarmSound
+
+_Alarm_beep:
+
+;Alarm.c,85 :: 		void Alarm_beep() {
+;Alarm.c,86 :: 		Sound_Play(880, 1000);
+	MOVLW       112
+	MOVWF       FARG_Sound_Play_freq_in_hz+0 
+	MOVLW       3
+	MOVWF       FARG_Sound_Play_freq_in_hz+1 
+	MOVLW       232
+	MOVWF       FARG_Sound_Play_duration_ms+0 
+	MOVLW       3
+	MOVWF       FARG_Sound_Play_duration_ms+1 
+	CALL        _Sound_Play+0, 0
+;Alarm.c,87 :: 		}
+L_end_Alarm_beep:
+	RETURN      0
+; end of _Alarm_beep

@@ -5,7 +5,7 @@ _Sensor_initialize:
 ;Sensor.c,10 :: 		ANSELE = 0x02;
 	MOVLW       2
 	MOVWF       ANSELE+0 
-;Sensor.c,11 :: 		TRISE1_bit = 1;
+;Sensor.c,11 :: 		TRISE1_bit = true;
 	BSF         TRISE1_bit+0, BitPos(TRISE1_bit+0) 
 ;Sensor.c,15 :: 		ADC_Init();
 	CALL        _ADC_Init+0, 0

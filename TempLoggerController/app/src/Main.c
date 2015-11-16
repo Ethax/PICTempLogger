@@ -13,8 +13,6 @@ sbit LCD_D5 at LATB1_bit; sbit LCD_D5_Direction at TRISB1_bit;
 sbit LCD_D6 at LATB2_bit; sbit LCD_D6_Direction at TRISB2_bit;
 sbit LCD_D7 at LATB3_bit; sbit LCD_D7_Direction at TRISB3_bit;
 
-// TODO: LCD, hõmérõ, stb. huzalozásainak beállítás.
-
 /**
  * @brief A magas prioritású megszakításokat kiszolgáló rutin.
  *

@@ -1,8 +1,8 @@
 
 _Application_initialize:
 
-;Application.c,16 :: 		void Application_initialize() {
-;Application.c,19 :: 		TRISA = TRISB = TRISC = TRISD = TRISE = 0xFF;
+;Application.c,18 :: 		void Application_initialize() {
+;Application.c,21 :: 		TRISA = TRISB = TRISC = TRISD = TRISE = 0xFF;
 	MOVLW       255
 	MOVWF       TRISE+0 
 	MOVF        TRISE+0, 0 
@@ -13,7 +13,7 @@ _Application_initialize:
 	MOVWF       TRISB+0 
 	MOVF        TRISB+0, 0 
 	MOVWF       TRISA+0 
-;Application.c,20 :: 		ANSELA = ANSELB = ANSELC = ANSELD = ANSELE = 0x00;
+;Application.c,22 :: 		ANSELA = ANSELB = ANSELC = ANSELD = ANSELE = 0x00;
 	CLRF        ANSELE+0 
 	MOVF        ANSELE+0, 0 
 	MOVWF       ANSELD+0 
@@ -23,7 +23,7 @@ _Application_initialize:
 	MOVWF       ANSELB+0 
 	MOVF        ANSELB+0, 0 
 	MOVWF       ANSELA+0 
-;Application.c,21 :: 		SLRCON = LATA = LATB = LATC = LATD = LATE = 0x00;
+;Application.c,23 :: 		SLRCON = LATA = LATB = LATC = LATD = LATE = 0x00;
 	CLRF        LATE+0 
 	MOVF        LATE+0, 0 
 	MOVWF       LATD+0 
@@ -35,28 +35,28 @@ _Application_initialize:
 	MOVWF       LATA+0 
 	MOVF        LATA+0, 0 
 	MOVWF       SLRCON+0 
-;Application.c,24 :: 		ADCON0 = ADCON1 = ADCON2 = 0x00;
+;Application.c,26 :: 		ADCON0 = ADCON1 = ADCON2 = 0x00;
 	CLRF        ADCON2+0 
 	MOVF        ADCON2+0, 0 
 	MOVWF       ADCON1+0 
 	MOVF        ADCON1+0, 0 
 	MOVWF       ADCON0+0 
-;Application.c,25 :: 		C1ON_bit = C2ON_bit = false;
+;Application.c,27 :: 		C1ON_bit = C2ON_bit = false;
 	BCF         C2ON_bit+0, BitPos(C2ON_bit+0) 
 	BTFSC       C2ON_bit+0, BitPos(C2ON_bit+0) 
-	GOTO        L__Application_initialize7
+	GOTO        L__Application_initialize9
 	BCF         C1ON_bit+0, BitPos(C1ON_bit+0) 
-	GOTO        L__Application_initialize8
-L__Application_initialize7:
+	GOTO        L__Application_initialize10
+L__Application_initialize9:
 	BSF         C1ON_bit+0, BitPos(C1ON_bit+0) 
-L__Application_initialize8:
-;Application.c,28 :: 		Display_initialize();
+L__Application_initialize10:
+;Application.c,30 :: 		Display_initialize();
 	CALL        _Display_initialize+0, 0
-;Application.c,29 :: 		Alarm_initialize();
+;Application.c,31 :: 		Alarm_initialize();
 	CALL        _Alarm_initialize+0, 0
-;Application.c,30 :: 		Timer_initialize();
+;Application.c,32 :: 		Timer_initialize();
 	CALL        _Timer_initialize+0, 0
-;Application.c,31 :: 		Sensor_initialize(3.3f);
+;Application.c,33 :: 		Sensor_initialize(3.3f);
 	MOVLW       51
 	MOVWF       FARG_Sensor_initialize__vref+0 
 	MOVLW       51
@@ -66,25 +66,21 @@ L__Application_initialize8:
 	MOVLW       128
 	MOVWF       FARG_Sensor_initialize__vref+3 
 	CALL        _Sensor_initialize+0, 0
-;Application.c,33 :: 		Alarm_setThreshold(40.0);
-	MOVLW       0
-	MOVWF       FARG_Alarm_setThreshold__threshold+0 
-	MOVLW       0
-	MOVWF       FARG_Alarm_setThreshold__threshold+1 
-	MOVLW       32
-	MOVWF       FARG_Alarm_setThreshold__threshold+2 
-	MOVLW       132
-	MOVWF       FARG_Alarm_setThreshold__threshold+3 
-	CALL        _Alarm_setThreshold+0, 0
-;Application.c,34 :: 		}
+;Application.c,34 :: 		Storage_initialize();
+	CALL        _Storage_initialize+0, 0
+;Application.c,35 :: 		Serial_initialize(BAUD_9600);
+	MOVLW       3
+	MOVWF       FARG_Serial_initialize_baudrate+0 
+	CALL        _Serial_initialize+0, 0
+;Application.c,36 :: 		}
 L_end_Application_initialize:
 	RETURN      0
 ; end of _Application_initialize
 
 _Application_dispatchEvent:
 
-;Application.c,40 :: 		void Application_dispatchEvent(EventHandler handler) {
-;Application.c,43 :: 		eventQueue.eventHandlers[eventQueue.end] = handler;
+;Application.c,42 :: 		void Application_dispatchEvent(EventHandler handler) {
+;Application.c,45 :: 		eventQueue.eventHandlers[eventQueue.end] = handler;
 	MOVF        _eventQueue+0, 0 
 	MOVWF       R0 
 	MOVLW       0
@@ -109,7 +105,7 @@ _Application_dispatchEvent:
 	MOVWF       POSTINC1+0 
 	MOVF        FARG_Application_dispatchEvent_handler+3, 0 
 	MOVWF       POSTINC1+0 
-;Application.c,44 :: 		eventQueue.end = (eventQueue.end + 1) % EVENT_QUEUE_SIZE;
+;Application.c,46 :: 		eventQueue.end = (eventQueue.end + 1) % EVENT_QUEUE_SIZE;
 	MOVF        _eventQueue+0, 0 
 	ADDLW       1
 	MOVWF       R0 
@@ -127,12 +123,12 @@ _Application_dispatchEvent:
 	MOVWF       R1 
 	MOVF        R0, 0 
 	MOVWF       _eventQueue+0 
-;Application.c,49 :: 		if(eventQueue.end == eventQueue.next)
-	MOVF        R0, 0 
+;Application.c,51 :: 		if(eventQueue.end == eventQueue.begin)
+	MOVF        _eventQueue+0, 0 
 	XORWF       _eventQueue+1, 0 
 	BTFSS       STATUS+0, 2 
 	GOTO        L_Application_dispatchEvent0
-;Application.c,50 :: 		eventQueue.next = (eventQueue.next + 1) % EVENT_QUEUE_SIZE;
+;Application.c,52 :: 		eventQueue.begin = (eventQueue.begin + 1) % EVENT_QUEUE_SIZE;
 	MOVF        _eventQueue+1, 0 
 	ADDLW       1
 	MOVWF       R0 
@@ -151,22 +147,22 @@ _Application_dispatchEvent:
 	MOVF        R0, 0 
 	MOVWF       _eventQueue+1 
 L_Application_dispatchEvent0:
-;Application.c,51 :: 		}
+;Application.c,53 :: 		}
 L_end_Application_dispatchEvent:
 	RETURN      0
 ; end of _Application_dispatchEvent
 
 _Application_handleEvents:
 
-;Application.c,57 :: 		void Application_handleEvents() {
-;Application.c,59 :: 		if(eventQueue.next == eventQueue.end) return;
+;Application.c,59 :: 		void Application_handleEvents() {
+;Application.c,61 :: 		if(eventQueue.begin == eventQueue.end) return;
 	MOVF        _eventQueue+1, 0 
 	XORWF       _eventQueue+0, 0 
 	BTFSS       STATUS+0, 2 
 	GOTO        L_Application_handleEvents1
 	GOTO        L_end_Application_handleEvents
 L_Application_handleEvents1:
-;Application.c,64 :: 		if(eventQueue.eventHandlers[eventQueue.next]) {
+;Application.c,66 :: 		if(eventQueue.eventHandlers[eventQueue.begin]) {
 	MOVF        _eventQueue+1, 0 
 	MOVWF       R0 
 	MOVLW       0
@@ -189,7 +185,7 @@ L_Application_handleEvents1:
 	IORWF       POSTINC0+0, 0 
 	BTFSC       STATUS+0, 2 
 	GOTO        L_Application_handleEvents2
-;Application.c,65 :: 		eventQueue.eventHandlers[eventQueue.next]();
+;Application.c,67 :: 		eventQueue.eventHandlers[eventQueue.begin]();
 	MOVF        _eventQueue+1, 0 
 	MOVWF       R0 
 	MOVLW       0
@@ -215,7 +211,7 @@ L_Application_handleEvents1:
 	MOVF        POSTINC0+0, 0 
 	MOVWF       R3 
 	CALL        _____DoIFC+0, 0
-;Application.c,66 :: 		eventQueue.eventHandlers[eventQueue.next] = 0;
+;Application.c,68 :: 		eventQueue.eventHandlers[eventQueue.begin] = 0;
 	MOVF        _eventQueue+1, 0 
 	MOVWF       R0 
 	MOVLW       0
@@ -236,9 +232,9 @@ L_Application_handleEvents1:
 	CLRF        POSTINC1+0 
 	CLRF        POSTINC1+0 
 	CLRF        POSTINC1+0 
-;Application.c,67 :: 		}
+;Application.c,69 :: 		}
 L_Application_handleEvents2:
-;Application.c,70 :: 		eventQueue.next = (eventQueue.next + 1) % EVENT_QUEUE_SIZE;
+;Application.c,72 :: 		eventQueue.begin = (eventQueue.begin + 1) % EVENT_QUEUE_SIZE;
 	MOVF        _eventQueue+1, 0 
 	ADDLW       1
 	MOVWF       R0 
@@ -256,38 +252,74 @@ L_Application_handleEvents2:
 	MOVWF       R1 
 	MOVF        R0, 0 
 	MOVWF       _eventQueue+1 
-;Application.c,71 :: 		}
+;Application.c,73 :: 		}
 L_end_Application_handleEvents:
 	RETURN      0
 ; end of _Application_handleEvents
 
 _Application_run:
 
-;Application.c,77 :: 		void Application_run() {
-;Application.c,80 :: 		IPEN_bit = false;
+;Application.c,79 :: 		void Application_run() {
+;Application.c,82 :: 		IPEN_bit = false;
 	BCF         IPEN_bit+0, BitPos(IPEN_bit+0) 
-;Application.c,81 :: 		PEIE_bit = GIE_bit = true;
+;Application.c,83 :: 		PEIE_bit = GIE_bit = true;
 	BSF         GIE_bit+0, BitPos(GIE_bit+0) 
 	BTFSC       GIE_bit+0, BitPos(GIE_bit+0) 
-	GOTO        L__Application_run12
+	GOTO        L__Application_run14
 	BCF         PEIE_bit+0, BitPos(PEIE_bit+0) 
-	GOTO        L__Application_run13
-L__Application_run12:
+	GOTO        L__Application_run15
+L__Application_run14:
 	BSF         PEIE_bit+0, BitPos(PEIE_bit+0) 
-L__Application_run13:
-;Application.c,84 :: 		while(true) Application_handleEvents();
+L__Application_run15:
+;Application.c,86 :: 		while(true) Application_handleEvents();
 L_Application_run3:
 	CALL        _Application_handleEvents+0, 0
 	GOTO        L_Application_run3
-;Application.c,85 :: 		}
+;Application.c,87 :: 		}
 L_end_Application_run:
 	RETURN      0
 ; end of _Application_run
 
+_Storage_settingsLoadedEvent:
+
+;Application.c,92 :: 		void Storage_settingsLoadedEvent() {
+;Application.c,94 :: 		StorableData* settings_ptr = Storage_getStoredSettings();
+	CALL        _Storage_getStoredSettings+0, 0
+	MOVF        R0, 0 
+	MOVWF       Storage_settingsLoadedEvent_settings_ptr_L0+0 
+	MOVF        R1, 0 
+	MOVWF       Storage_settingsLoadedEvent_settings_ptr_L0+1 
+;Application.c,95 :: 		Timer_setSystemTime(&settings_ptr->systemTime);
+	MOVF        R0, 0 
+	MOVWF       FARG_Timer_setSystemTime_time_ptr+0 
+	MOVF        R1, 0 
+	MOVWF       FARG_Timer_setSystemTime_time_ptr+1 
+	CALL        _Timer_setSystemTime+0, 0
+;Application.c,96 :: 		Alarm_setThreshold(settings_ptr->threshold);
+	MOVLW       6
+	ADDWF       Storage_settingsLoadedEvent_settings_ptr_L0+0, 0 
+	MOVWF       FSR0 
+	MOVLW       0
+	ADDWFC      Storage_settingsLoadedEvent_settings_ptr_L0+1, 0 
+	MOVWF       FSR0H 
+	MOVF        POSTINC0+0, 0 
+	MOVWF       FARG_Alarm_setThreshold__threshold+0 
+	MOVF        POSTINC0+0, 0 
+	MOVWF       FARG_Alarm_setThreshold__threshold+1 
+	MOVF        POSTINC0+0, 0 
+	MOVWF       FARG_Alarm_setThreshold__threshold+2 
+	MOVF        POSTINC0+0, 0 
+	MOVWF       FARG_Alarm_setThreshold__threshold+3 
+	CALL        _Alarm_setThreshold+0, 0
+;Application.c,97 :: 		}
+L_end_Storage_settingsLoadedEvent:
+	RETURN      0
+; end of _Storage_settingsLoadedEvent
+
 _Timer_elapsedSecondEvent:
 
-;Application.c,90 :: 		void Timer_elapsedSecondEvent() {
-;Application.c,92 :: 		float actual_temp = Sensor_getTemperature();
+;Application.c,102 :: 		void Timer_elapsedSecondEvent() {
+;Application.c,104 :: 		float actual_temp = Sensor_getTemperature();
 	CALL        _Sensor_getTemperature+0, 0
 	MOVF        R0, 0 
 	MOVWF       Timer_elapsedSecondEvent_actual_temp_L0+0 
@@ -297,7 +329,7 @@ _Timer_elapsedSecondEvent:
 	MOVWF       Timer_elapsedSecondEvent_actual_temp_L0+2 
 	MOVF        R3, 0 
 	MOVWF       Timer_elapsedSecondEvent_actual_temp_L0+3 
-;Application.c,97 :: 		char* date_str = Timer_timeToString(Timer_getSystemTime());
+;Application.c,109 :: 		char* date_str = Timer_timeToString(Timer_getSystemTime());
 	CALL        _Timer_getSystemTime+0, 0
 	MOVF        R0, 0 
 	MOVWF       FARG_Timer_timeToString_time_ptr+0 
@@ -308,7 +340,7 @@ _Timer_elapsedSecondEvent:
 	MOVWF       Timer_elapsedSecondEvent_date_str_L0+0 
 	MOVF        R1, 0 
 	MOVWF       Timer_elapsedSecondEvent_date_str_L0+1 
-;Application.c,98 :: 		char* time_str = strstr(date_str, " ");
+;Application.c,110 :: 		char* time_str = strstr(date_str, " ");
 	MOVF        R0, 0 
 	MOVWF       FARG_strstr_s1+0 
 	MOVF        R1, 0 
@@ -322,13 +354,13 @@ _Timer_elapsedSecondEvent:
 	MOVWF       Timer_elapsedSecondEvent_time_str_L0+0 
 	MOVF        R1, 0 
 	MOVWF       Timer_elapsedSecondEvent_time_str_L0+1 
-;Application.c,99 :: 		*time_str++ = '\0';
+;Application.c,111 :: 		*time_str++ = '\0';
 	MOVFF       R0, FSR1
 	MOVFF       R1, FSR1H
 	CLRF        POSTINC1+0 
 	INFSNZ      Timer_elapsedSecondEvent_time_str_L0+0, 1 
 	INCF        Timer_elapsedSecondEvent_time_str_L0+1, 1 
-;Application.c,103 :: 		Display_writeLine(1, "%a   [T]", date_str);
+;Application.c,115 :: 		Display_writeLine(1, "%a   [T]", date_str);
 	MOVLW       1
 	MOVWF       FARG_Display_writeLine_line+0 
 	MOVLW       ?lstr2_Application+0
@@ -340,7 +372,7 @@ _Timer_elapsedSecondEvent:
 	MOVF        Timer_elapsedSecondEvent_date_str_L0+1, 0 
 	MOVWF       FARG_Display_writeLine_line+4 
 	CALL        _Display_writeLine+0, 0
-;Application.c,104 :: 		Display_writeLine(2, "%a %2f%cC", time_str, actual_temp, 223);
+;Application.c,116 :: 		Display_writeLine(2, "%a %2f%cC", time_str, actual_temp, 223);
 	MOVLW       2
 	MOVWF       FARG_Display_writeLine_line+0 
 	MOVLW       ?lstr3_Application+0
@@ -362,7 +394,7 @@ _Timer_elapsedSecondEvent:
 	MOVLW       223
 	MOVWF       FARG_Display_writeLine_line+9 
 	CALL        _Display_writeLine+0, 0
-;Application.c,108 :: 		if(Alarm_checkConditions(actual_temp)) {
+;Application.c,120 :: 		Alarm_checkConditions(actual_temp);
 	MOVF        Timer_elapsedSecondEvent_actual_temp_L0+0, 0 
 	MOVWF       FARG_Alarm_checkConditions__temperature+0 
 	MOVF        Timer_elapsedSecondEvent_actual_temp_L0+1, 0 
@@ -372,10 +404,83 @@ _Timer_elapsedSecondEvent:
 	MOVF        Timer_elapsedSecondEvent_actual_temp_L0+3, 0 
 	MOVWF       FARG_Alarm_checkConditions__temperature+3 
 	CALL        _Alarm_checkConditions+0, 0
-	MOVF        R0, 1 
-	BTFSC       STATUS+0, 2 
-	GOTO        L_Timer_elapsedSecondEvent5
-;Application.c,109 :: 		Display_writeLine(1, "     ALARM!");
+;Application.c,121 :: 		}
+L_end_Timer_elapsedSecondEvent:
+	RETURN      0
+; end of _Timer_elapsedSecondEvent
+
+_Timer_elapsedMinuteEvent:
+
+;Application.c,126 :: 		void Timer_elapsedMinuteEvent() {
+;Application.c,128 :: 		Storage_writeLog(Timer_getSystemTime(), Sensor_getTemperature());
+	CALL        _Sensor_getTemperature+0, 0
+	MOVF        R0, 0 
+	MOVWF       FLOC__Timer_elapsedMinuteEvent+0 
+	MOVF        R1, 0 
+	MOVWF       FLOC__Timer_elapsedMinuteEvent+1 
+	MOVF        R2, 0 
+	MOVWF       FLOC__Timer_elapsedMinuteEvent+2 
+	MOVF        R3, 0 
+	MOVWF       FLOC__Timer_elapsedMinuteEvent+3 
+	CALL        _Timer_getSystemTime+0, 0
+	MOVF        R0, 0 
+	MOVWF       FARG_Storage_writeLog_timeStamp+0 
+	MOVF        R1, 0 
+	MOVWF       FARG_Storage_writeLog_timeStamp+1 
+	MOVF        FLOC__Timer_elapsedMinuteEvent+0, 0 
+	MOVWF       FARG_Storage_writeLog_value+0 
+	MOVF        FLOC__Timer_elapsedMinuteEvent+1, 0 
+	MOVWF       FARG_Storage_writeLog_value+1 
+	MOVF        FLOC__Timer_elapsedMinuteEvent+2, 0 
+	MOVWF       FARG_Storage_writeLog_value+2 
+	MOVF        FLOC__Timer_elapsedMinuteEvent+3, 0 
+	MOVWF       FARG_Storage_writeLog_value+3 
+	CALL        _Storage_writeLog+0, 0
+;Application.c,129 :: 		Delay_ms(5);
+	MOVLW       13
+	MOVWF       R12, 0
+	MOVLW       251
+	MOVWF       R13, 0
+L_Timer_elapsedMinuteEvent5:
+	DECFSZ      R13, 1, 1
+	BRA         L_Timer_elapsedMinuteEvent5
+	DECFSZ      R12, 1, 1
+	BRA         L_Timer_elapsedMinuteEvent5
+	NOP
+	NOP
+;Application.c,130 :: 		Storage_storeSettings(Timer_getSystemTime(), Alarm_getThreshold());
+	CALL        _Alarm_getThreshold+0, 0
+	MOVF        R0, 0 
+	MOVWF       FLOC__Timer_elapsedMinuteEvent+0 
+	MOVF        R1, 0 
+	MOVWF       FLOC__Timer_elapsedMinuteEvent+1 
+	MOVF        R2, 0 
+	MOVWF       FLOC__Timer_elapsedMinuteEvent+2 
+	MOVF        R3, 0 
+	MOVWF       FLOC__Timer_elapsedMinuteEvent+3 
+	CALL        _Timer_getSystemTime+0, 0
+	MOVF        R0, 0 
+	MOVWF       FARG_Storage_storeSettings__systemTime+0 
+	MOVF        R1, 0 
+	MOVWF       FARG_Storage_storeSettings__systemTime+1 
+	MOVF        FLOC__Timer_elapsedMinuteEvent+0, 0 
+	MOVWF       FARG_Storage_storeSettings__threshold+0 
+	MOVF        FLOC__Timer_elapsedMinuteEvent+1, 0 
+	MOVWF       FARG_Storage_storeSettings__threshold+1 
+	MOVF        FLOC__Timer_elapsedMinuteEvent+2, 0 
+	MOVWF       FARG_Storage_storeSettings__threshold+2 
+	MOVF        FLOC__Timer_elapsedMinuteEvent+3, 0 
+	MOVWF       FARG_Storage_storeSettings__threshold+3 
+	CALL        _Storage_storeSettings+0, 0
+;Application.c,131 :: 		}
+L_end_Timer_elapsedMinuteEvent:
+	RETURN      0
+; end of _Timer_elapsedMinuteEvent
+
+_Alarm_thresholdExceededEvent:
+
+;Application.c,136 :: 		void Alarm_thresholdExceededEvent() {
+;Application.c,138 :: 		Display_writeLine(1, "     ALARM!");
 	MOVLW       1
 	MOVWF       FARG_Display_writeLine_line+0 
 	MOVLW       ?lstr4_Application+0
@@ -383,23 +488,82 @@ _Timer_elapsedSecondEvent:
 	MOVLW       hi_addr(?lstr4_Application+0)
 	MOVWF       FARG_Display_writeLine_format+1 
 	CALL        _Display_writeLine+0, 0
-;Application.c,110 :: 		Display_clearLine(2);
+;Application.c,139 :: 		Display_clearLine(2);
 	MOVLW       2
 	MOVWF       FARG_Display_clearLine_line+0 
 	CALL        _Display_clearLine+0, 0
-;Application.c,111 :: 		Alarm_playAlarmSound();
+;Application.c,140 :: 		Alarm_playAlarmSound();
 	CALL        _Alarm_playAlarmSound+0, 0
-;Application.c,112 :: 		}
-L_Timer_elapsedSecondEvent5:
-;Application.c,113 :: 		}
-L_end_Timer_elapsedSecondEvent:
+;Application.c,141 :: 		}
+L_end_Alarm_thresholdExceededEvent:
 	RETURN      0
-; end of _Timer_elapsedSecondEvent
+; end of _Alarm_thresholdExceededEvent
 
-_Timer_elapsedMinuteEvent:
+_Serial_receivedTimeSettingEvent:
 
-;Application.c,118 :: 		void Timer_elapsedMinuteEvent() {
-;Application.c,120 :: 		}
-L_end_Timer_elapsedMinuteEvent:
+;Application.c,146 :: 		void Serial_receivedTimeSettingEvent() {
+;Application.c,148 :: 		Timer_setSystemTime((PICTime*)Serial_getReceivedData());
+	CALL        _Serial_getReceivedData+0, 0
+	MOVF        R0, 0 
+	MOVWF       FARG_Timer_setSystemTime_time_ptr+0 
+	MOVF        R1, 0 
+	MOVWF       FARG_Timer_setSystemTime_time_ptr+1 
+	CALL        _Timer_setSystemTime+0, 0
+;Application.c,149 :: 		Serial_sendAcknowledgement();
+	CALL        _Serial_sendAcknowledgement+0, 0
+;Application.c,150 :: 		}
+L_end_Serial_receivedTimeSettingEvent:
 	RETURN      0
-; end of _Timer_elapsedMinuteEvent
+; end of _Serial_receivedTimeSettingEvent
+
+_Serial_receivedThresholdSettingEvent:
+
+;Application.c,155 :: 		void Serial_receivedThresholdSettingEvent() {
+;Application.c,158 :: 		Alarm_setThreshold(*(float*)Serial_getReceivedData());
+	CALL        _Serial_getReceivedData+0, 0
+	MOVFF       R0, FSR0
+	MOVFF       R1, FSR0H
+	MOVF        POSTINC0+0, 0 
+	MOVWF       FARG_Alarm_setThreshold__threshold+0 
+	MOVF        POSTINC0+0, 0 
+	MOVWF       FARG_Alarm_setThreshold__threshold+1 
+	MOVF        POSTINC0+0, 0 
+	MOVWF       FARG_Alarm_setThreshold__threshold+2 
+	MOVF        POSTINC0+0, 0 
+	MOVWF       FARG_Alarm_setThreshold__threshold+3 
+	CALL        _Alarm_setThreshold+0, 0
+;Application.c,159 :: 		Serial_sendAcknowledgement();
+	CALL        _Serial_sendAcknowledgement+0, 0
+;Application.c,160 :: 		}
+L_end_Serial_receivedThresholdSettingEvent:
+	RETURN      0
+; end of _Serial_receivedThresholdSettingEvent
+
+_Serial_receivedLogRequestEvent:
+
+;Application.c,165 :: 		void Serial_receivedLogRequestEvent() {
+;Application.c,168 :: 		while((entry = Storage_readEarliestLog()))
+L_Serial_receivedLogRequestEvent6:
+	CALL        _Storage_readEarliestLog+0, 0
+	MOVF        R0, 0 
+	MOVWF       Serial_receivedLogRequestEvent_entry_L0+0 
+	MOVF        R1, 0 
+	MOVWF       Serial_receivedLogRequestEvent_entry_L0+1 
+	MOVF        R0, 0 
+	IORWF       R1, 0 
+	BTFSC       STATUS+0, 2 
+	GOTO        L_Serial_receivedLogRequestEvent7
+;Application.c,169 :: 		Serial_sendLogEntry(entry);
+	MOVF        Serial_receivedLogRequestEvent_entry_L0+0, 0 
+	MOVWF       FARG_Serial_sendLogEntry_entry+0 
+	MOVF        Serial_receivedLogRequestEvent_entry_L0+1, 0 
+	MOVWF       FARG_Serial_sendLogEntry_entry+1 
+	CALL        _Serial_sendLogEntry+0, 0
+	GOTO        L_Serial_receivedLogRequestEvent6
+L_Serial_receivedLogRequestEvent7:
+;Application.c,172 :: 		Serial_sendAcknowledgement();
+	CALL        _Serial_sendAcknowledgement+0, 0
+;Application.c,173 :: 		}
+L_end_Serial_receivedLogRequestEvent:
+	RETURN      0
+; end of _Serial_receivedLogRequestEvent

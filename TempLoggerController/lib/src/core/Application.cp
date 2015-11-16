@@ -61,7 +61,7 @@ typedef struct event_queue_t {
 #line 32 "c:/projects/pictemplogger/temploggercontroller/lib/inc/core/application.h"
  uint8_t end;
 #line 37 "c:/projects/pictemplogger/temploggercontroller/lib/inc/core/application.h"
- uint8_t next;
+ uint8_t begin;
 #line 42 "c:/projects/pictemplogger/temploggercontroller/lib/inc/core/application.h"
  EventHandler eventHandlers[ 20 ];
 } EventQueue;
@@ -124,17 +124,80 @@ float Sensor_getTemperature();
 void Alarm_initialize();
 #line 18 "c:/projects/pictemplogger/temploggercontroller/lib/inc/alarm/alarm.h"
 void Alarm_setThreshold(float _threshold);
-#line 23 "c:/projects/pictemplogger/temploggercontroller/lib/inc/alarm/alarm.h"
+#line 25 "c:/projects/pictemplogger/temploggercontroller/lib/inc/alarm/alarm.h"
+float Alarm_getThreshold();
+#line 30 "c:/projects/pictemplogger/temploggercontroller/lib/inc/alarm/alarm.h"
 void Alarm_clearThreshold();
-#line 37 "c:/projects/pictemplogger/temploggercontroller/lib/inc/alarm/alarm.h"
- _Bool  Alarm_checkConditions(float _temperature);
-#line 42 "c:/projects/pictemplogger/temploggercontroller/lib/inc/alarm/alarm.h"
+#line 43 "c:/projects/pictemplogger/temploggercontroller/lib/inc/alarm/alarm.h"
+void Alarm_checkConditions(float _temperature);
+#line 48 "c:/projects/pictemplogger/temploggercontroller/lib/inc/alarm/alarm.h"
 void Alarm_playAlarmSound();
-#line 10 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/core/Application.c"
-EventQueue eventQueue = { 0, 0, { 0 }};
-#line 16 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/core/Application.c"
+#line 53 "c:/projects/pictemplogger/temploggercontroller/lib/inc/alarm/alarm.h"
+void Alarm_beep();
+#line 59 "c:/projects/pictemplogger/temploggercontroller/lib/inc/alarm/alarm.h"
+extern void Alarm_thresholdExceededEvent();
+#line 1 "c:/projects/pictemplogger/temploggercontroller/lib/inc/storage/storage.h"
+#line 1 "c:/projects/pictemplogger/temploggercontroller/lib/inc/common.h"
+#line 1 "c:/projects/pictemplogger/temploggercontroller/lib/inc/timer/timer.h"
+#line 22 "c:/projects/pictemplogger/temploggercontroller/lib/inc/storage/storage.h"
+typedef struct storable_data_t {
+#line 26 "c:/projects/pictemplogger/temploggercontroller/lib/inc/storage/storage.h"
+ PICTime systemTime;
+#line 31 "c:/projects/pictemplogger/temploggercontroller/lib/inc/storage/storage.h"
+ float threshold;
+#line 36 "c:/projects/pictemplogger/temploggercontroller/lib/inc/storage/storage.h"
+ uint8_t logBegin;
+#line 41 "c:/projects/pictemplogger/temploggercontroller/lib/inc/storage/storage.h"
+ uint8_t logEnd;
+} StorableData;
+#line 52 "c:/projects/pictemplogger/temploggercontroller/lib/inc/storage/storage.h"
+typedef struct log_t {
+#line 56 "c:/projects/pictemplogger/temploggercontroller/lib/inc/storage/storage.h"
+ PICTime timeStamp;
+#line 61 "c:/projects/pictemplogger/temploggercontroller/lib/inc/storage/storage.h"
+ float value;
+} LogEntry;
+#line 71 "c:/projects/pictemplogger/temploggercontroller/lib/inc/storage/storage.h"
+void Storage_initialize();
+#line 79 "c:/projects/pictemplogger/temploggercontroller/lib/inc/storage/storage.h"
+StorableData* Storage_getStoredSettings();
+#line 88 "c:/projects/pictemplogger/temploggercontroller/lib/inc/storage/storage.h"
+void Storage_storeSettings(PICTime* _systemTime, float _threshold);
+#line 96 "c:/projects/pictemplogger/temploggercontroller/lib/inc/storage/storage.h"
+void Storage_writeLog(PICTime* timeStamp, float value);
+#line 109 "c:/projects/pictemplogger/temploggercontroller/lib/inc/storage/storage.h"
+LogEntry* Storage_readEarliestLog();
+#line 116 "c:/projects/pictemplogger/temploggercontroller/lib/inc/storage/storage.h"
+extern void Storage_settingsLoadedEvent();
+#line 1 "c:/projects/pictemplogger/temploggercontroller/lib/inc/serialcomm/serial.h"
+#line 1 "c:/projects/pictemplogger/temploggercontroller/lib/inc/common.h"
+#line 1 "c:/projects/pictemplogger/temploggercontroller/lib/inc/storage/storage.h"
+#line 10 "c:/projects/pictemplogger/temploggercontroller/lib/inc/serialcomm/serial.h"
+enum BaudRate {
+ BAUD_1200, BAUD_2400, BAUD_4800, BAUD_9600, BAUD_19200, BAUD_38400,
+ BAUD_57600, BAUD_115200
+};
+#line 22 "c:/projects/pictemplogger/temploggercontroller/lib/inc/serialcomm/serial.h"
+void Serial_initialize(enum BaudRate baudrate);
+#line 31 "c:/projects/pictemplogger/temploggercontroller/lib/inc/serialcomm/serial.h"
+void Serial_handleInterrupt();
+#line 41 "c:/projects/pictemplogger/temploggercontroller/lib/inc/serialcomm/serial.h"
+void* Serial_getReceivedData();
+#line 48 "c:/projects/pictemplogger/temploggercontroller/lib/inc/serialcomm/serial.h"
+void Serial_sendLogEntry(LogEntry* entry);
+#line 53 "c:/projects/pictemplogger/temploggercontroller/lib/inc/serialcomm/serial.h"
+void Serial_sendAcknowledgement();
+#line 59 "c:/projects/pictemplogger/temploggercontroller/lib/inc/serialcomm/serial.h"
+extern void Serial_receivedTimeSettingEvent();
+#line 65 "c:/projects/pictemplogger/temploggercontroller/lib/inc/serialcomm/serial.h"
+extern void Serial_receivedThresholdSettingEvent();
+#line 71 "c:/projects/pictemplogger/temploggercontroller/lib/inc/serialcomm/serial.h"
+extern void Serial_receivedLogRequestEvent();
+#line 12 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/core/Application.c"
+volatile EventQueue eventQueue = { 0, 0, { 0 }};
+#line 18 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/core/Application.c"
 void Application_initialize() {
-#line 19 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/core/Application.c"
+#line 21 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/core/Application.c"
  TRISA = TRISB = TRISC = TRISD = TRISE = 0xFF;
  ANSELA = ANSELB = ANSELC = ANSELD = ANSELE = 0x00;
  SLRCON = LATA = LATB = LATC = LATD = LATE = 0x00;
@@ -148,59 +211,94 @@ void Application_initialize() {
  Alarm_initialize();
  Timer_initialize();
  Sensor_initialize(3.3f);
-
- Alarm_setThreshold(40.0);
+ Storage_initialize();
+ Serial_initialize(BAUD_9600);
 }
-#line 40 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/core/Application.c"
+#line 42 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/core/Application.c"
 void Application_dispatchEvent(EventHandler handler) {
-#line 43 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/core/Application.c"
+#line 45 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/core/Application.c"
  eventQueue.eventHandlers[eventQueue.end] = handler;
  eventQueue.end = (eventQueue.end + 1) %  20 ;
-#line 49 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/core/Application.c"
- if(eventQueue.end == eventQueue.next)
- eventQueue.next = (eventQueue.next + 1) %  20 ;
+#line 51 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/core/Application.c"
+ if(eventQueue.end == eventQueue.begin)
+ eventQueue.begin = (eventQueue.begin + 1) %  20 ;
 }
-#line 57 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/core/Application.c"
+#line 59 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/core/Application.c"
 void Application_handleEvents() {
 
- if(eventQueue.next == eventQueue.end) return;
-#line 64 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/core/Application.c"
- if(eventQueue.eventHandlers[eventQueue.next]) {
- eventQueue.eventHandlers[eventQueue.next]();
- eventQueue.eventHandlers[eventQueue.next] = 0;
+ if(eventQueue.begin == eventQueue.end) return;
+#line 66 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/core/Application.c"
+ if(eventQueue.eventHandlers[eventQueue.begin]) {
+ eventQueue.eventHandlers[eventQueue.begin]();
+ eventQueue.eventHandlers[eventQueue.begin] = 0;
  }
 
 
- eventQueue.next = (eventQueue.next + 1) %  20 ;
+ eventQueue.begin = (eventQueue.begin + 1) %  20 ;
 }
-#line 77 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/core/Application.c"
+#line 79 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/core/Application.c"
 void Application_run() {
-#line 80 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/core/Application.c"
+#line 82 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/core/Application.c"
  IPEN_bit =  0 ;
  PEIE_bit = GIE_bit =  1 ;
 
 
  while( 1 ) Application_handleEvents();
 }
-#line 90 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/core/Application.c"
+#line 92 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/core/Application.c"
+void Storage_settingsLoadedEvent() {
+
+ StorableData* settings_ptr = Storage_getStoredSettings();
+ Timer_setSystemTime(&settings_ptr->systemTime);
+ Alarm_setThreshold(settings_ptr->threshold);
+}
+#line 102 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/core/Application.c"
 void Timer_elapsedSecondEvent() {
 
  float actual_temp = Sensor_getTemperature();
-#line 97 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/core/Application.c"
+#line 109 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/core/Application.c"
  char* date_str = Timer_timeToString(Timer_getSystemTime());
  char* time_str = strstr(date_str, " ");
  *time_str++ = '\0';
-#line 103 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/core/Application.c"
+#line 115 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/core/Application.c"
  Display_writeLine(1, "%a   [T]", date_str);
  Display_writeLine(2, "%a %2f%cC", time_str, actual_temp, 223);
-#line 108 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/core/Application.c"
- if(Alarm_checkConditions(actual_temp)) {
+#line 120 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/core/Application.c"
+ Alarm_checkConditions(actual_temp);
+}
+#line 126 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/core/Application.c"
+void Timer_elapsedMinuteEvent() {
+
+ Storage_writeLog(Timer_getSystemTime(), Sensor_getTemperature());
+ Delay_ms(5);
+ Storage_storeSettings(Timer_getSystemTime(), Alarm_getThreshold());
+}
+#line 136 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/core/Application.c"
+void Alarm_thresholdExceededEvent() {
+
  Display_writeLine(1, "     ALARM!");
  Display_clearLine(2);
  Alarm_playAlarmSound();
- }
 }
-#line 118 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/core/Application.c"
-void Timer_elapsedMinuteEvent() {
+#line 146 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/core/Application.c"
+void Serial_receivedTimeSettingEvent() {
 
+ Timer_setSystemTime((PICTime*)Serial_getReceivedData());
+ Serial_sendAcknowledgement();
+}
+#line 155 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/core/Application.c"
+void Serial_receivedThresholdSettingEvent() {
+#line 158 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/core/Application.c"
+ Alarm_setThreshold(*(float*)Serial_getReceivedData());
+ Serial_sendAcknowledgement();
+}
+#line 165 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/core/Application.c"
+void Serial_receivedLogRequestEvent() {
+
+ LogEntry* entry;
+ while((entry = Storage_readEarliestLog()))
+ Serial_sendLogEntry(entry);
+
+
+ Serial_sendAcknowledgement();
 }

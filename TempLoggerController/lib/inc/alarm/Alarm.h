@@ -18,13 +18,20 @@ void Alarm_initialize();
 void Alarm_setThreshold(float _threshold);
 
 /**
+ * @brief Visszaadja a riasztás küszöbértékét.
+ *
+ * @return A riasztás küszöbértéke Celsuis fokokban.
+ */
+float Alarm_getThreshold();
+
+/**
  * @brief Törli a riasztás küszöbértékét, és egyúttal letiltja a riasztást.
  */
 void Alarm_clearThreshold();
 
 /**
- * @brief Ellenõrzi a riasztás feltételeit és IGAZ értékkel tér vissza, ha a
- * feltételek alapján meg kell kezdeni a riasztást.
+ * @brief Ellenõrzi a riasztás feltételeit és végrehajtja a riasztás
+ * eseménykezelõjét, ha a feltételek alapján meg kell kezdeni a riasztást.
  *
  * A riasztáshoz három feltétel kell, hogy teljesüljön: a riasztásnak
  * engedélyezettnek kell lennie, a mért hõmérsékletnek meg kell haladnia a
@@ -32,13 +39,23 @@ void Alarm_clearThreshold();
  * egyszer a küszöb alá kellett esnie.
  *
  * @param _temperature A mért hõmérséklet Celsuis fokokban.
- * @return Ha a riasztás feltételei teljesültek, akkor IGAZ, egyébként HAMIS.
  */
-bool Alarm_checkConditions(float _temperature);
+void Alarm_checkConditions(float _temperature);
 
 /**
  * @brief Lejátssza a riasztó hangjelzést.
  */
 void Alarm_playAlarmSound();
+
+/**
+ * @brief Lead egy egy másodpercig tartó 880Hz-es hangjelzést.
+ */
+void Alarm_beep();
+
+/**
+ * @brief A riasztás feltételeinek teljesülésekor végrehajtásra kerülõ
+ * eseménykezelõ deklarációja. (Az eseménykezelõ törzsét definiálni kell.)
+ */
+extern void Alarm_thresholdExceededEvent();
 
 #endif /* INC_ALARM_H_ */

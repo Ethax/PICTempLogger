@@ -64,7 +64,7 @@ float VREF = 0;
 void Sensor_initialize(const float _vref) {
 
  ANSELE = 0x02;
- TRISE1_bit = 1;
+ TRISE1_bit =  1 ;
 #line 15 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/tempsensor/Sensor.c"
  ADC_Init();
  VREF = _vref;

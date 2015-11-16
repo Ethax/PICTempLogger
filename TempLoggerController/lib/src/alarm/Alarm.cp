@@ -58,12 +58,18 @@ typedef void * va_list[1];
 void Alarm_initialize();
 #line 18 "c:/projects/pictemplogger/temploggercontroller/lib/inc/alarm/alarm.h"
 void Alarm_setThreshold(float _threshold);
-#line 23 "c:/projects/pictemplogger/temploggercontroller/lib/inc/alarm/alarm.h"
+#line 25 "c:/projects/pictemplogger/temploggercontroller/lib/inc/alarm/alarm.h"
+float Alarm_getThreshold();
+#line 30 "c:/projects/pictemplogger/temploggercontroller/lib/inc/alarm/alarm.h"
 void Alarm_clearThreshold();
-#line 37 "c:/projects/pictemplogger/temploggercontroller/lib/inc/alarm/alarm.h"
- _Bool  Alarm_checkConditions(float _temperature);
-#line 42 "c:/projects/pictemplogger/temploggercontroller/lib/inc/alarm/alarm.h"
+#line 43 "c:/projects/pictemplogger/temploggercontroller/lib/inc/alarm/alarm.h"
+void Alarm_checkConditions(float _temperature);
+#line 48 "c:/projects/pictemplogger/temploggercontroller/lib/inc/alarm/alarm.h"
 void Alarm_playAlarmSound();
+#line 53 "c:/projects/pictemplogger/temploggercontroller/lib/inc/alarm/alarm.h"
+void Alarm_beep();
+#line 59 "c:/projects/pictemplogger/temploggercontroller/lib/inc/alarm/alarm.h"
+extern void Alarm_thresholdExceededEvent();
 #line 1 "c:/projects/pictemplogger/temploggercontroller/lib/inc/alarm/melody.h"
 #line 130 "c:/projects/pictemplogger/temploggercontroller/lib/inc/alarm/melody.h"
 void playTheImperialMarch() {
@@ -158,7 +164,7 @@ typedef struct event_queue_t {
 #line 32 "c:/projects/pictemplogger/temploggercontroller/lib/inc/core/application.h"
  uint8_t end;
 #line 37 "c:/projects/pictemplogger/temploggercontroller/lib/inc/core/application.h"
- uint8_t next;
+ uint8_t begin;
 #line 42 "c:/projects/pictemplogger/temploggercontroller/lib/inc/core/application.h"
  EventHandler eventHandlers[ 20 ];
 } EventQueue;
@@ -171,7 +177,7 @@ void Application_handleEvents();
 #line 69 "c:/projects/pictemplogger/temploggercontroller/lib/inc/core/application.h"
 void Application_run();
 #line 8 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/alarm/Alarm.c"
-float Threshold = 0.0f;
+float threshold = 90.0f;
 #line 14 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/alarm/Alarm.c"
  _Bool  isAlerted =  0 ;
 #line 19 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/alarm/Alarm.c"
@@ -179,35 +185,40 @@ float Threshold = 0.0f;
 #line 26 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/alarm/Alarm.c"
 void Alarm_initialize() {
  Sound_Init(&PORTC, 2);
- Sound_Play(880, 1000);
+ Alarm_beep();
 }
 #line 34 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/alarm/Alarm.c"
 void Alarm_setThreshold(float _threshold) {
- Threshold = _threshold;
+ threshold = _threshold;
  isThresholdSet =  1 ;
 }
 #line 42 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/alarm/Alarm.c"
+float Alarm_getThreshold() {
+ return threshold;
+}
+#line 49 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/alarm/Alarm.c"
 void Alarm_clearThreshold() {
- Threshold = 0.0f;
+ threshold = 0.0f;
  isThresholdSet =  0 ;
 }
-#line 51 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/alarm/Alarm.c"
- _Bool  Alarm_checkConditions(float _temperature) {
-#line 54 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/alarm/Alarm.c"
- if(!isThresholdSet) return  0 ;
-#line 59 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/alarm/Alarm.c"
- if(_temperature > Threshold && !isAlerted) {
+#line 58 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/alarm/Alarm.c"
+void Alarm_checkConditions(float _temperature) {
+#line 61 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/alarm/Alarm.c"
+ if(!isThresholdSet) return;
+#line 66 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/alarm/Alarm.c"
+ if(_temperature > threshold && !isAlerted) {
  isAlerted =  1 ;
- return  1 ;
+ Alarm_thresholdExceededEvent();
  }
- else if(_temperature <= Threshold && isAlerted) {
+ else if(_temperature <= threshold && isAlerted) {
  isAlerted =  0 ;
  }
-#line 69 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/alarm/Alarm.c"
- return  0 ;
 }
-
-
+#line 78 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/alarm/Alarm.c"
 void Alarm_playAlarmSound() {
  playTheImperialMarch();
+}
+#line 85 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/alarm/Alarm.c"
+void Alarm_beep() {
+ Sound_Play(880, 1000);
 }

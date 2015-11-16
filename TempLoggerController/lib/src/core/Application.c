@@ -3,11 +3,13 @@
 #include <display/Display.h>
 #include <tempsensor/Sensor.h>
 #include <alarm/Alarm.h>
+#include <storage/Storage.h>
+#include <serialcomm/Serial.h>
 
 /*
  * Az eseménykezelõk várakozási sorának deklarálása és inicializálása.
  */
-EventQueue eventQueue = { 0, 0, { 0 }};
+volatile EventQueue eventQueue = { 0, 0, { 0 }};
 
 /*
  * Inicializálja a mikrovezérlõ I/O portjait, a perifériáit és az alkalmazást
@@ -29,8 +31,8 @@ void Application_initialize() {
   Alarm_initialize();
   Timer_initialize();
   Sensor_initialize(3.3f);
-  
-  Alarm_setThreshold(40.0);
+  Storage_initialize();
+  Serial_initialize(BAUD_9600);
 }
 
 /*
@@ -46,8 +48,8 @@ void Application_dispatchEvent(EventHandler handler) {
   /* A várakozási sorban levõ következõ eseménykezelõ kijelölése, amennyiben a
   várakozási sorban túlcsordulás keletkezett. (A legrégebbi esemény el fog
   veszni.) */
-  if(eventQueue.end == eventQueue.next)
-    eventQueue.next = (eventQueue.next + 1) % EVENT_QUEUE_SIZE;
+  if(eventQueue.end == eventQueue.begin)
+    eventQueue.begin = (eventQueue.begin + 1) % EVENT_QUEUE_SIZE;
 }
 
 /*
@@ -56,18 +58,18 @@ void Application_dispatchEvent(EventHandler handler) {
  */
 void Application_handleEvents() {
   /* Azonnali visszatérés a függvénybõl, ha a várakozási sor üres. */
-  if(eventQueue.next == eventQueue.end) return;
+  if(eventQueue.begin == eventQueue.end) return;
 
   /* A soron következõ eseménykezelõ végrehajtása, ha a rá mutató
   függvénypointer értéke nem nulla, és a végrehajtást követõen az
   eseménykezelõre mutató függvénypointer eltávolítása a várakozási sorból. */
-  if(eventQueue.eventHandlers[eventQueue.next]) {
-    eventQueue.eventHandlers[eventQueue.next]();
-    eventQueue.eventHandlers[eventQueue.next] = 0;
+  if(eventQueue.eventHandlers[eventQueue.begin]) {
+    eventQueue.eventHandlers[eventQueue.begin]();
+    eventQueue.eventHandlers[eventQueue.begin] = 0;
   }
 
   /* A várakozási sorban levõ következõ eseménykezelõ kijelölése. */
-  eventQueue.next = (eventQueue.next + 1) % EVENT_QUEUE_SIZE;
+  eventQueue.begin = (eventQueue.begin + 1) % EVENT_QUEUE_SIZE;
 }
 
 /*
@@ -82,6 +84,16 @@ void Application_run() {
   
   /* A beérkezett eseménykezelõk folyamatos végrehajtása. */
   while(true) Application_handleEvents();
+}
+
+/*
+ * Kezeli a beállítások betöltésével járó eseményt.
+ */
+void Storage_settingsLoadedEvent() {
+  /* A betöltött beállítások lekérdezése és alkalmazása. */
+  StorableData* settings_ptr = Storage_getStoredSettings();
+  Timer_setSystemTime(&settings_ptr->systemTime);
+  Alarm_setThreshold(settings_ptr->threshold);
 }
 
 /*
@@ -105,16 +117,57 @@ void Timer_elapsedSecondEvent() {
 
   /* A riasztás bekapcsolása, amennyiben a pillanatnyi hõmérséklettel együtt a
   riasztás feltételei teljesültek.*/
-  if(Alarm_checkConditions(actual_temp)) {
-    Display_writeLine(1, "     ALARM!");
-    Display_clearLine(2);
-    Alarm_playAlarmSound();
-  }
+  Alarm_checkConditions(actual_temp);
 }
 
 /*
  * Kezeli a percenként bekövetkezõ periodikus eseményt.
  */
 void Timer_elapsedMinuteEvent() {
+  /* Új naplóbejegyzés és az aktuális beállítások beleírása az EEPROM-ba. */
+  Storage_writeLog(Timer_getSystemTime(), Sensor_getTemperature());
+  Delay_ms(5);
+  Storage_storeSettings(Timer_getSystemTime(), Alarm_getThreshold());
+}
 
+/*
+ * Kezeli a riasztás feltételeinek teljesülésével járó eseményt.
+ */
+void Alarm_thresholdExceededEvent() {
+  /* A riasztó üzenet kiírása a kijelzõre és a riasztó hangjelzés lejátszása. */
+  Display_writeLine(1, "     ALARM!");
+  Display_clearLine(2);
+  Alarm_playAlarmSound();
+}
+
+/*
+ * Kezeli az új dátum és idõ fogadásával járó eseményt.
+ */
+void Serial_receivedTimeSettingEvent() {
+  /* Az új dátum és idõ beállítása, és a fogadott kérelem nyugtázása. */
+  Timer_setSystemTime((PICTime*)Serial_getReceivedData());
+  Serial_sendAcknowledgement();
+}
+
+/*
+ * Kezeli az új riasztási küszöbérték fogadásával járó eseményt.
+ */
+void Serial_receivedThresholdSettingEvent() {
+  /* A riasztás új küszöbértéknek beállítása és a fogadott kérelem
+  nyugtázása. */
+  Alarm_setThreshold(*(float*)Serial_getReceivedData());
+  Serial_sendAcknowledgement();
+}
+
+/*
+ * Kezeli a naplóbejegyzések elküldésére vonatkozó felszólítással járó eseményt.
+ */
+void Serial_receivedLogRequestEvent() {
+  /* Minden egyes naplóbejegyzés elküldése a soros porton keresztül. */
+  LogEntry* entry;
+  while((entry = Storage_readEarliestLog()))
+    Serial_sendLogEntry(entry);
+  
+  /* A fogadott kérelem nyugtázása. */
+  Serial_sendAcknowledgement();
 }
