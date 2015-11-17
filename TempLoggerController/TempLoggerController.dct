@@ -1965,9 +1965,11 @@ stkptr4
 stkptr4_bit
 stkunf
 stkunf_bit
+storage_firstbootevent
 storage_getstoredsettings
 storage_initialize
 storage_readearliestlog
+storage_resetlogcounter
 storage_settingsloadedevent
 storage_storesettings
 storage_writelog

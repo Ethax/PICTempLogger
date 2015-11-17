@@ -107,16 +107,20 @@ typedef struct log_t {
 } LogEntry;
 #line 71 "c:/projects/pictemplogger/temploggercontroller/lib/inc/storage/storage.h"
 void Storage_initialize();
-#line 79 "c:/projects/pictemplogger/temploggercontroller/lib/inc/storage/storage.h"
+#line 78 "c:/projects/pictemplogger/temploggercontroller/lib/inc/storage/storage.h"
+void Storage_resetLogCounter();
+#line 86 "c:/projects/pictemplogger/temploggercontroller/lib/inc/storage/storage.h"
 StorableData* Storage_getStoredSettings();
-#line 88 "c:/projects/pictemplogger/temploggercontroller/lib/inc/storage/storage.h"
+#line 95 "c:/projects/pictemplogger/temploggercontroller/lib/inc/storage/storage.h"
 void Storage_storeSettings(PICTime* _systemTime, float _threshold);
-#line 96 "c:/projects/pictemplogger/temploggercontroller/lib/inc/storage/storage.h"
+#line 103 "c:/projects/pictemplogger/temploggercontroller/lib/inc/storage/storage.h"
 void Storage_writeLog(PICTime* timeStamp, float value);
-#line 109 "c:/projects/pictemplogger/temploggercontroller/lib/inc/storage/storage.h"
-LogEntry* Storage_readEarliestLog();
 #line 116 "c:/projects/pictemplogger/temploggercontroller/lib/inc/storage/storage.h"
+LogEntry* Storage_readEarliestLog();
+#line 123 "c:/projects/pictemplogger/temploggercontroller/lib/inc/storage/storage.h"
 extern void Storage_settingsLoadedEvent();
+#line 130 "c:/projects/pictemplogger/temploggercontroller/lib/inc/storage/storage.h"
+extern void Storage_firstBootEvent();
 #line 10 "c:/projects/pictemplogger/temploggercontroller/lib/inc/serialcomm/serial.h"
 enum BaudRate {
  BAUD_1200, BAUD_2400, BAUD_4800, BAUD_9600, BAUD_19200, BAUD_38400,
@@ -159,15 +163,15 @@ void Application_dispatchEvent(EventHandler handler);
 void Application_handleEvents();
 #line 69 "c:/projects/pictemplogger/temploggercontroller/lib/inc/core/application.h"
 void Application_run();
-#line 4 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/serialcomm/Serial.c"
+#line 7 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/serialcomm/Serial.c"
 uint8_t receiveBuffer[20] = { 0 };
-
+#line 13 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/serialcomm/Serial.c"
 uint8_t transmitBuffer[20] = { 0 };
-
-uint8_t receiveCounter = 0;
-#line 15 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/serialcomm/Serial.c"
-void Serial_initialize(enum BaudRate baudrate) {
 #line 18 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/serialcomm/Serial.c"
+uint8_t receiveCounter = 0;
+#line 25 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/serialcomm/Serial.c"
+void Serial_initialize(enum BaudRate baudrate) {
+#line 28 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/serialcomm/Serial.c"
  switch(baudrate) {
  case BAUD_1200:
  UART1_Init(1200); break;
@@ -191,11 +195,11 @@ void Serial_initialize(enum BaudRate baudrate) {
  RC1IF_bit =  0 ;
  RC1IE_bit =  1 ;
 }
-#line 46 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/serialcomm/Serial.c"
+#line 56 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/serialcomm/Serial.c"
 void Serial_handleInterrupt() {
 
  uint8_t next_byte = UART1_Read();
-#line 53 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/serialcomm/Serial.c"
+#line 63 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/serialcomm/Serial.c"
  if(next_byte == '\n') {
  switch(receiveBuffer[0]) {
  case 'T':
@@ -210,7 +214,7 @@ void Serial_handleInterrupt() {
  }
  receiveCounter = 0;
  }
-#line 70 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/serialcomm/Serial.c"
+#line 80 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/serialcomm/Serial.c"
  else {
  receiveBuffer[receiveCounter++] = next_byte;
  }
@@ -218,24 +222,24 @@ void Serial_handleInterrupt() {
 
  RC1IF_bit =  0 ;
 }
-#line 81 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/serialcomm/Serial.c"
+#line 91 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/serialcomm/Serial.c"
 void* Serial_getReceivedData() {
  return (void*)&receiveBuffer[1];
 }
-#line 88 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/serialcomm/Serial.c"
+#line 98 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/serialcomm/Serial.c"
 void Serial_sendLogEntry(LogEntry* entry) {
  uint8_t i;
-#line 93 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/serialcomm/Serial.c"
+#line 103 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/serialcomm/Serial.c"
  memcpy(transmitBuffer, entry, sizeof(LogEntry));
  for(i = 0; i < sizeof(LogEntry); i++)
  UART1_Write(transmitBuffer[i]);
-#line 99 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/serialcomm/Serial.c"
+#line 109 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/serialcomm/Serial.c"
  UART1_Write('\n');
 }
-#line 105 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/serialcomm/Serial.c"
+#line 115 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/serialcomm/Serial.c"
 void Serial_sendAcknowledgement() {
 
  UART1_Write('A'); UART1_Write('C'); UART1_Write('K');
-#line 111 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/serialcomm/Serial.c"
+#line 121 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/serialcomm/Serial.c"
  UART1_Write('\n');
 }

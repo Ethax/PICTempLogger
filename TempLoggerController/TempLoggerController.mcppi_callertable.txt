@@ -73,6 +73,47 @@ main
 				Timer_setSystemTime
 					memcpy
 				Alarm_setThreshold
+			Storage_firstBootEvent
+				Display_writeLine
+					Lcd_Cmd
+						Delay_1us
+						Delay_5500us
+						Delay_50us
+					Lcd_Out_CP
+						Lcd_Chr_CP
+							Lcd_Cmd
+								Delay_1us
+								Delay_5500us
+								Delay_50us
+					Lcd_Chr_CP
+						Lcd_Cmd
+							Delay_1us
+							Delay_5500us
+							Delay_50us
+					intToString
+						Div_32x32_S
+							SDIV3232L
+							COMFREM
+					floatToString
+						intToString
+							Div_32x32_S
+								SDIV3232L
+								COMFREM
+					strlen
+				Display_clearLine
+					Lcd_Cmd
+						Delay_1us
+						Delay_5500us
+						Delay_50us
+					Lcd_Chr_CP
+						Lcd_Cmd
+							Delay_1us
+							Delay_5500us
+							Delay_50us
+				Timer_setSystemTime
+					memcpy
+				Alarm_setThreshold
+				Storage_resetLogCounter
 		Serial_initialize
 			UART1_Init
 	Application_run

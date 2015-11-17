@@ -25,6 +25,15 @@ void Storage_initialize() {
   ExternalEEPROM_initialize(0x01);
   if(Storage_getStoredSettings())
     Storage_settingsLoadedEvent();
+  else
+    Storage_firstBootEvent();
+}
+
+/*
+ * Alaphelyzetbe állítja a naplóbejegyzések számlálóit.
+ */
+void Storage_resetLogCounter() {
+  logBegin = logEnd = 0x10;
 }
 
 /*

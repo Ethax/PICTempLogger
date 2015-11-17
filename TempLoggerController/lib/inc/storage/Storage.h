@@ -42,7 +42,7 @@ typedef struct storable_data_t {
 } StorableData;
 
 /**
- * @typedef Log
+ * @typedef LogEntry
  * @brief A naplóbejegyzések adatszerkezete.
  *
  * Ez az adatszerkezet a mért hõmérséklet idõbélyegezett naplózását teszi
@@ -69,6 +69,13 @@ typedef struct log_t {
  * beállítások betöltésének eseménykezelõjét.
  */
 void Storage_initialize();
+
+/**
+ * @brief Alaphelyzetbe állítja a naplóbejegyzések számlálóit.
+ *
+ * FIGYELEM: Ennek hatására az összes beírt naplóbejegyzés elveszik.
+ */
+void Storage_resetLogCounter();
 
 /**
  * @brief Betölti a beállításokat a külsõ EEPROM-ból és visszaadja a betöltött
@@ -114,5 +121,12 @@ LogEntry* Storage_readEarliestLog();
  * kell.)
  */
 extern void Storage_settingsLoadedEvent();
+
+/**
+ * @brief Az elsõ indításkor, vagy az EEPROM chip cseréjét követõen
+ * végrehajtásra kerülõ eseménykezelõ deklarációja. (Az eseménykezelõ törzsét
+ * definiálni kell.)
+ */
+extern void Storage_firstBootEvent();
 
 #endif /* INC_STORAGE_H_ */

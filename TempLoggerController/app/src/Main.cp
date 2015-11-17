@@ -109,16 +109,20 @@ typedef struct log_t {
 } LogEntry;
 #line 71 "c:/projects/pictemplogger/temploggercontroller/lib/inc/storage/storage.h"
 void Storage_initialize();
-#line 79 "c:/projects/pictemplogger/temploggercontroller/lib/inc/storage/storage.h"
+#line 78 "c:/projects/pictemplogger/temploggercontroller/lib/inc/storage/storage.h"
+void Storage_resetLogCounter();
+#line 86 "c:/projects/pictemplogger/temploggercontroller/lib/inc/storage/storage.h"
 StorableData* Storage_getStoredSettings();
-#line 88 "c:/projects/pictemplogger/temploggercontroller/lib/inc/storage/storage.h"
+#line 95 "c:/projects/pictemplogger/temploggercontroller/lib/inc/storage/storage.h"
 void Storage_storeSettings(PICTime* _systemTime, float _threshold);
-#line 96 "c:/projects/pictemplogger/temploggercontroller/lib/inc/storage/storage.h"
+#line 103 "c:/projects/pictemplogger/temploggercontroller/lib/inc/storage/storage.h"
 void Storage_writeLog(PICTime* timeStamp, float value);
-#line 109 "c:/projects/pictemplogger/temploggercontroller/lib/inc/storage/storage.h"
-LogEntry* Storage_readEarliestLog();
 #line 116 "c:/projects/pictemplogger/temploggercontroller/lib/inc/storage/storage.h"
+LogEntry* Storage_readEarliestLog();
+#line 123 "c:/projects/pictemplogger/temploggercontroller/lib/inc/storage/storage.h"
 extern void Storage_settingsLoadedEvent();
+#line 130 "c:/projects/pictemplogger/temploggercontroller/lib/inc/storage/storage.h"
+extern void Storage_firstBootEvent();
 #line 10 "c:/projects/pictemplogger/temploggercontroller/lib/inc/serialcomm/serial.h"
 enum BaudRate {
  BAUD_1200, BAUD_2400, BAUD_4800, BAUD_9600, BAUD_19200, BAUD_38400,

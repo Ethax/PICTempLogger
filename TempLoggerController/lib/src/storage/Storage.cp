@@ -105,16 +105,20 @@ typedef struct log_t {
 } LogEntry;
 #line 71 "c:/projects/pictemplogger/temploggercontroller/lib/inc/storage/storage.h"
 void Storage_initialize();
-#line 79 "c:/projects/pictemplogger/temploggercontroller/lib/inc/storage/storage.h"
+#line 78 "c:/projects/pictemplogger/temploggercontroller/lib/inc/storage/storage.h"
+void Storage_resetLogCounter();
+#line 86 "c:/projects/pictemplogger/temploggercontroller/lib/inc/storage/storage.h"
 StorableData* Storage_getStoredSettings();
-#line 88 "c:/projects/pictemplogger/temploggercontroller/lib/inc/storage/storage.h"
+#line 95 "c:/projects/pictemplogger/temploggercontroller/lib/inc/storage/storage.h"
 void Storage_storeSettings(PICTime* _systemTime, float _threshold);
-#line 96 "c:/projects/pictemplogger/temploggercontroller/lib/inc/storage/storage.h"
+#line 103 "c:/projects/pictemplogger/temploggercontroller/lib/inc/storage/storage.h"
 void Storage_writeLog(PICTime* timeStamp, float value);
-#line 109 "c:/projects/pictemplogger/temploggercontroller/lib/inc/storage/storage.h"
-LogEntry* Storage_readEarliestLog();
 #line 116 "c:/projects/pictemplogger/temploggercontroller/lib/inc/storage/storage.h"
+LogEntry* Storage_readEarliestLog();
+#line 123 "c:/projects/pictemplogger/temploggercontroller/lib/inc/storage/storage.h"
 extern void Storage_settingsLoadedEvent();
+#line 130 "c:/projects/pictemplogger/temploggercontroller/lib/inc/storage/storage.h"
+extern void Storage_firstBootEvent();
 #line 1 "c:/projects/pictemplogger/temploggercontroller/lib/inc/storage/externaleeprom.h"
 #line 1 "c:/projects/pictemplogger/temploggercontroller/lib/inc/common.h"
 #line 14 "c:/projects/pictemplogger/temploggercontroller/lib/inc/storage/externaleeprom.h"
@@ -140,11 +144,17 @@ void Storage_initialize() {
  ExternalEEPROM_initialize(0x01);
  if(Storage_getStoredSettings())
  Storage_settingsLoadedEvent();
+ else
+ Storage_firstBootEvent();
 }
-#line 34 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/storage/Storage.c"
+#line 35 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/storage/Storage.c"
+void Storage_resetLogCounter() {
+ logBegin = logEnd = 0x10;
+}
+#line 43 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/storage/Storage.c"
 StorableData* Storage_getStoredSettings() {
  uint8_t checksum;
-#line 39 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/storage/Storage.c"
+#line 48 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/storage/Storage.c"
  if(!isLoadedAlready) {
  checksum = ExternalEEPROM_readSequence(0x00, &systemSettings, sizeof(StorableData));
  Delay_ms(5);
@@ -153,12 +163,12 @@ StorableData* Storage_getStoredSettings() {
  else
  return 0;
  }
-#line 50 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/storage/Storage.c"
+#line 59 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/storage/Storage.c"
  logBegin = systemSettings.logBegin;
  logEnd = systemSettings.logEnd;
  return &systemSettings;
 }
-#line 59 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/storage/Storage.c"
+#line 68 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/storage/Storage.c"
 void Storage_storeSettings(PICTime* _systemTime, float _threshold) {
  uint8_t checksum;
 
@@ -167,31 +177,31 @@ void Storage_storeSettings(PICTime* _systemTime, float _threshold) {
  systemSettings.threshold = _threshold;
  systemSettings.logBegin = logBegin;
  systemSettings.logEnd = logEnd;
-#line 70 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/storage/Storage.c"
+#line 79 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/storage/Storage.c"
  isLoadedAlready =  0 ;
  checksum = ExternalEEPROM_writeRow(0x00, &systemSettings, sizeof(StorableData));
  Delay_ms(5);
  ExternalEEPROM_write(sizeof(StorableData), checksum);
 }
-#line 79 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/storage/Storage.c"
+#line 88 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/storage/Storage.c"
 void Storage_writeLog(PICTime* timeStamp, float value) {
  static LogEntry new_log;
-#line 84 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/storage/Storage.c"
+#line 93 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/storage/Storage.c"
  memcpy(&new_log.timeStamp, timeStamp, sizeof(PICTime));
  new_log.value = value;
  ExternalEEPROM_writeRow(logEnd, &new_log, sizeof(LogEntry));
-#line 90 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/storage/Storage.c"
+#line 99 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/storage/Storage.c"
  logEnd = ((logEnd & 0xF0) % ( 15  << 4)) + 0x10;
  if(logBegin == logEnd)
  logBegin = ((logBegin & 0xF0) % ( 15  << 4)) + 0x10;
 }
-#line 99 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/storage/Storage.c"
+#line 108 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/storage/Storage.c"
 LogEntry* Storage_readEarliestLog() {
  static LogEntry read_log;
 
 
  if(logBegin == logEnd) return 0;
-#line 107 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/storage/Storage.c"
+#line 116 "C:/Projects/PICTempLogger/TempLoggerController/lib/src/storage/Storage.c"
  ExternalEEPROM_readSequence(logBegin, &read_log, sizeof(LogEntry));
  logBegin = ((logBegin & 0xF0) % ( 15  << 4)) + 0x10;
 

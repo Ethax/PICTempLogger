@@ -31,7 +31,7 @@ void Serial_initialize(enum BaudRate baudrate);
 void Serial_handleInterrupt();
 
 /**
- * @brief Lekérdezi a fogadott adatra mutató általános pointert.
+ * @brief Visszaadja a fogadott adatra mutató általános pointert.
  *
  * A fogadott adat típusától függõen a pointert típus-konvertálni kell a
  * fogadott adatnak megfelelõ pointerré.

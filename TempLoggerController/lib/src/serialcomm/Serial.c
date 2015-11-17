@@ -1,10 +1,20 @@
 #include <serialcomm/Serial.h>
 #include <core/Application.h>
 
+/*
+ * A beérkezõ adatokat tároló fogadó puffer deklarálása és inicializálása.
+ */
 uint8_t receiveBuffer[20] = { 0 };
 
+/*
+ * Az elküldésre szánt adatokat tároló kimenõ puffer deklarálása és
+ * inicializálása.
+ */
 uint8_t transmitBuffer[20] = { 0 };
 
+/*
+ * A beérkezõ adatbájtokat számláló változó deklarálása és inicializálása.
+ */
 uint8_t receiveCounter = 0;
 
 /*
@@ -76,7 +86,7 @@ void Serial_handleInterrupt() {
 }
 
 /*
- * Lekérdezi a fogadott adatra mutató általános pointert.
+ * Visszaadja a fogadott adatra mutató általános pointert.
  */
 void* Serial_getReceivedData() {
   return (void*)&receiveBuffer[1];

@@ -87,6 +87,33 @@ void Application_run() {
 }
 
 /*
+ * Kezeli az elsõ indítással vagy az EEPROM chip cseréjével járól eseményt.
+ */
+void Storage_firstBootEvent() {
+  PICTime default_time;
+  
+  /* Az elsõ indítás üzenetének megjelenítése egy másodpercig. */
+  Display_writeLine(1, "Loading defaults");
+  Display_clearLine(2);
+  Delay_ms(1000);
+  
+  /* Alapértelmezett idõ beállítása. */
+  default_time.second = 0;
+  default_time.minute = 0;
+  default_time.hour = 0;
+  default_time.day = 1;
+  default_time.month = 1;
+  default_time.year = 70;
+  Timer_setSystemTime(&default_time);
+  
+  /* Alapértelmezett riasztási küszöbérték beállítása. */
+  Alarm_setThreshold(90.0f);
+  
+  /* A naplóbejegyzések számlálóinak alaphelyzetbe állítása. */
+  Storage_resetLogCounter();
+}
+
+/*
  * Kezeli a beállítások betöltésével járó eseményt.
  */
 void Storage_settingsLoadedEvent() {
@@ -157,6 +184,11 @@ void Serial_receivedThresholdSettingEvent() {
   nyugtázása. */
   Alarm_setThreshold(*(float*)Serial_getReceivedData());
   Serial_sendAcknowledgement();
+  
+  /* A beállítás elfogadásának jelzése a kijelzõn egy másodpercig. */
+  Display_writeLine(1, "New threshold:");
+  Display_writeLine(2, "%2f%cC", Alarm_getThreshold(), 223);
+  Delay_ms(1000);
 }
 
 /*
