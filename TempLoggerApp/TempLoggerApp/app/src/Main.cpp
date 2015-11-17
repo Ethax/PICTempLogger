@@ -5,37 +5,6 @@
 
 using namespace std;
 
-union {
-	float   IEEE_Float;
-	unsigned char   uBytes[4];
-}  uF;
-
-void convert_ieee_to_microchip(float fval) {
-	uF.IEEE_Float = fval;
-	unsigned char tempchar_sbit = uF.uBytes[3] & 0x80;   // get IEEE sign bit -- resides in bit 31
-	uF.uBytes[3] *= 2;                     // one shift left (drags in a zero on the right)
-	if(uF.uBytes[2] & 0x80)                  // if bit 23 is set,
-	{
-		uF.uBytes[3] |= 0x01;                 // set bit 24 (else it will remain cleared)
-		uF.uBytes[2] &= 0x7F;                // clear bit 23
-	};
-	if(tempchar_sbit)                        // if IEEE sign bit was set,
-		uF.uBytes[2] |= 0x80;                  // set bit 23 (else, leave it cleared) 
-}
-
-float convert_microchip_to_ieee() {
-
-	unsigned char tempchar_sbit = uF.uBytes[2] & 0x80;   // get Microchip sign bit -- resides in bit 23
-	uF.uBytes[2] &= 0x7F;                // clear bit 23
-	if(uF.uBytes[3] & 0x01)                  // if bit 24 is set,
-		uF.uBytes[2] |= 0x80;                  // set bit 23 (else, leave it cleared)
-	uF.uBytes[3] /= 2;                     // one shift right (drags in a zero on the left)
-	if(tempchar_sbit)                        // if Microchip sign bit was set,
-		uF.uBytes[3] |= 0x80;                  // set bit 31 (else, leave it cleared) 
-
-	return uF.IEEE_Float;
-}
-
 /**
 * @brief Az alkalmazás belépési pontja, ami az alkalmazás
 * futtatásakor elõször hívódik meg.
@@ -46,7 +15,6 @@ int main(int argc, char* argv[]) {
 	SerialPort serialPort("/dev/ttyUSB0");
 	PICTime actualTime;
 	float threshold = 0.0f;
-	unsigned char transmitBuffer[20] = { 0 };
 
 	/* A használati súgó kiíratása a konzol képernyõre, ha a megadott
 	parancssori argumentumok száma nem megfelelõ. */
@@ -59,67 +27,89 @@ int main(int argc, char* argv[]) {
 	}
 
 	/* A megadott parancssori argumentumok feldolgozása és az átadott
-	értékek letárolása. */
+	értékeknek megfelelõ mûveletek végrehajtása. */
 	for(int i = 1; i < argc; i++) {
 		try {
+			/* A soros port megnyitása. */
 			serialPort.openPort();
+			
+			/* A riasztás küszöbértékét megváltoztató üzenet kiküldése
+			a soros porton kereszül, ha a parancssori argumentum értéke
+			"--threshold". */
 			if(string(argv[i]) == "--threshold") {
 				threshold = stof(string(argv[++i]));
 				if(threshold < 0.0f || threshold > 99.0f) {
 					cout << "Invalid threshold. The value must be between 0 and 99." << endl;
 					exit(0);
 				}
-
-				convert_ieee_to_microchip(threshold);
-
 				serialPort.writeByte('R');
-				serialPort.writeData(uF.uBytes, sizeof(float));
+				serialPort.writeData(FloatUtils::convertIEEE754ToMicrochip(threshold), 4);
 				serialPort.writeByte('\n');
 			}
+			/* A mikrovezérlõ által számolt idõt a PC idejével
+			összehangoló üzenet kiküldése a soros porton kereszül, ha
+			a parancssori argumentum értéke "--synctime". */
 			else if(string(argv[i]) == "--synctime") {
 				serialPort.writeByte('T');
 				serialPort.writeData(actualTime.serialize(), sizeof(PICTime));
 				serialPort.writeByte('\n');
 			}
+			/* A letárol naplóbejegyzéseket lekérõ üzenet kiküldése a
+			soros porton kereszül, ha a parancssori argumentum értéke
+			"--getlog". */
 			else if(string(argv[i]) == "--getlog") {
 				serialPort.writeByte('L');
 				serialPort.writeByte('\n');
 			}
+			/* Hiba megjelenítése és a program futásának megszakítása, ha
+			a parancssori argumentum értéke hibás. */
 			else {
 				cout << "Not enough or invalid arguments." << endl;
 				exit(0);
 			}
 
+			/* A nyugtázó üzenet megérkezésének kivárása legfeljebb 10
+			másodpercig. */
 			std::string receiveBuffer;
 			LogEntry entry;
-
 			while(true) {
 				receiveBuffer = serialPort.readLine(10000);
+				
+				/* A nyugta kiíratása a konzol képernyõre és az alkalmazás
+				futásának befejezése, ha a fogadott adatbájtok értéke
+				megegyezik a nyugta üzenetével. */
 				if(receiveBuffer.find("ACK") != string::npos) {
 					cout << receiveBuffer << endl;
 					break;
 				}
+				/* A fogadott adatbájtok naplóbejegyzéseket tároló objektummá
+				alakítása és kiíratása a konzol képernyõre. */
 				else {
 					std::memcpy(&entry, receiveBuffer.c_str(), sizeof(LogEntry));
-					uF.IEEE_Float = entry.value;
-
-					cout << entry << convert_microchip_to_ieee() << endl;
+					cout << entry << endl;
 				}
 			}
 		}
+		/* A standart kivételek elfogása és a hibaüzenet kiíratása a
+		konzol képernyõre. */
 		catch(exception& e) {
 			cout << "An exception is thrown: " << e.what() << endl;
 			exit(0);
 		}
+		/* A soros portot kezelõ objektumtól származó kivételek elfogása
+		és a hibaüzenet kiíratása a konzol képernyõre. */
 		catch(SerialException& e) {
 			cout << e.getErrorMessage() << endl;
 		}
+		/* Az ismeretlen eredetû kivételek elfogása és a hibaüzenet
+		kiíratása a konzol képernyõre. */
 		catch(...) {
 			cout << endl << "Application terminated with an unexpected error." << endl;
 		}
 	}
 
-	/* Az alkalmazás futásának befejezése. */
+	/* A megnyitott soros port lezárása és az alkalmazás futásának
+	befejezése. */
 	if(serialPort.isOpen())
 		serialPort.closePort();
 	return 0;

@@ -13,7 +13,7 @@ OBJCOPY := objcopy
 
 #Additional flags
 PREPROCESSOR_MACROS := NDEBUG RELEASE
-INCLUDE_DIRS := 
+INCLUDE_DIRS := /home/pi/Workspace/TempLoggerApp
 LIBRARY_DIRS := 
 LIBRARY_NAMES := 
 ADDITIONAL_LINKER_INPUTS := 
