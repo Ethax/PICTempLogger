@@ -25,7 +25,7 @@ main
 					Get_Fosc_kHz
 					Mul_32x32_U
 					Div_32x32_U
-					Div_16x16_U
+					Div_16X16_U
 					Delay_Cyc
 		Timer_initialize
 		Sensor_initialize

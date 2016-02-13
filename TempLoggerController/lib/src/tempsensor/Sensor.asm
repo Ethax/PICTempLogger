@@ -31,7 +31,7 @@ _Sensor_getTemperature:
 	MOVWF       FARG_ADC_Get_Sample_channel+0 
 	CALL        _ADC_Get_Sample+0, 0
 ;Sensor.c,29 :: 		return ((float)temp_res * VREF) / 10.240;
-	CALL        _Word2Double+0, 0
+	CALL        _word2double+0, 0
 	MOVF        _VREF+0, 0 
 	MOVWF       R4 
 	MOVF        _VREF+1, 0 

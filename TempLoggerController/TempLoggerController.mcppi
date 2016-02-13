@@ -6,7 +6,7 @@ Value=0
 [BUILD_TYPE]
 Value=0
 [ACTIVE_TAB]
-Value=app\src\Main.c
+Value=lib\src\core\Application.c
 [USE_EEPROM]
 Value=0
 [USE_HEAP]
@@ -15,10 +15,6 @@ Value=0
 Value=2000
 [EEPROM_DEFINITION]
 Value=
-[EXPANDED_NODES]
-Node0=Sources
-Node1=Header Files
-Count=2
 [FILES]
 Count=10
 File0=app\src\Main.c
@@ -37,8 +33,9 @@ Count=0
 Count=0
 ActiveImageIndex=-1
 [OPENED_FILES]
-Count=1
+Count=2
 File0=app\src\Main.c
+File1=lib\src\core\Application.c
 [EEPROM]
 Count=0
 [ACTIVE_COMMENTS_FILES]
@@ -47,7 +44,7 @@ Count=0
 Count=0
 [SEARCH_PATH]
 Count=20
-Path0=C:\Program Files (x86)\Mikroelektronika\mikroC PRO for PIC\defs\
+Path0=C:\Program Files (x86)\Mikroelektronika\mikroC PRO for PIC\Defs\
 Path1=C:\Program Files (x86)\Mikroelektronika\mikroC PRO for PIC\uses\P18\
 Path2=C:\Projects\PICTempLogger\TempLoggerController\
 Path3=C:\Projects\PICTempLogger\TempLoggerController\app\src\
@@ -102,8 +99,7 @@ File5=Sound
 File6=Conversions
 File7=ADC
 File8=C_Type
-[EXPANDED NODES]
-Node1=Sources
-Node2=Header Files
-Node3=Output Files
-Count=3
+[EXPANDED_NODES]
+Node0=Sources
+Node1=Header Files
+Count=2

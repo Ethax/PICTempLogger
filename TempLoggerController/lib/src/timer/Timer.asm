@@ -408,7 +408,7 @@ _Timer_timeToString:
 	MOVWF       R0 
 	MOVLW       10
 	MOVWF       R4 
-	CALL        _Div_8x8_U+0, 0
+	CALL        _Div_8X8_U+0, 0
 	MOVLW       48
 	ADDWF       R0, 1 
 	MOVFF       FLOC__Timer_timeToString+0, FSR1
@@ -435,7 +435,7 @@ _Timer_timeToString:
 	MOVWF       R0 
 	MOVLW       10
 	MOVWF       R4 
-	CALL        _Div_8x8_U+0, 0
+	CALL        _Div_8X8_U+0, 0
 	MOVF        R8, 0 
 	MOVWF       R0 
 	MOVLW       48
@@ -476,7 +476,7 @@ _Timer_timeToString:
 	MOVWF       R0 
 	MOVLW       10
 	MOVWF       R4 
-	CALL        _Div_8x8_U+0, 0
+	CALL        _Div_8X8_U+0, 0
 	MOVLW       48
 	ADDWF       R0, 1 
 	MOVFF       FLOC__Timer_timeToString+0, FSR1
@@ -503,7 +503,7 @@ _Timer_timeToString:
 	MOVWF       R0 
 	MOVLW       10
 	MOVWF       R4 
-	CALL        _Div_8x8_U+0, 0
+	CALL        _Div_8X8_U+0, 0
 	MOVF        R8, 0 
 	MOVWF       R0 
 	MOVLW       48
@@ -544,7 +544,7 @@ _Timer_timeToString:
 	MOVWF       R0 
 	MOVLW       10
 	MOVWF       R4 
-	CALL        _Div_8x8_U+0, 0
+	CALL        _Div_8X8_U+0, 0
 	MOVLW       48
 	ADDWF       R0, 1 
 	MOVFF       FLOC__Timer_timeToString+0, FSR1
@@ -571,7 +571,7 @@ _Timer_timeToString:
 	MOVWF       R0 
 	MOVLW       10
 	MOVWF       R4 
-	CALL        _Div_8x8_U+0, 0
+	CALL        _Div_8X8_U+0, 0
 	MOVF        R8, 0 
 	MOVWF       R0 
 	MOVLW       48
@@ -612,7 +612,7 @@ _Timer_timeToString:
 	MOVWF       R0 
 	MOVLW       10
 	MOVWF       R4 
-	CALL        _Div_8x8_U+0, 0
+	CALL        _Div_8X8_U+0, 0
 	MOVLW       48
 	ADDWF       R0, 1 
 	MOVFF       FLOC__Timer_timeToString+0, FSR1
@@ -639,7 +639,7 @@ _Timer_timeToString:
 	MOVWF       R0 
 	MOVLW       10
 	MOVWF       R4 
-	CALL        _Div_8x8_U+0, 0
+	CALL        _Div_8X8_U+0, 0
 	MOVF        R8, 0 
 	MOVWF       R0 
 	MOVLW       48
@@ -676,7 +676,7 @@ _Timer_timeToString:
 	MOVWF       R0 
 	MOVLW       10
 	MOVWF       R4 
-	CALL        _Div_8x8_U+0, 0
+	CALL        _Div_8X8_U+0, 0
 	MOVLW       48
 	ADDWF       R0, 1 
 	MOVFF       FLOC__Timer_timeToString+0, FSR1
@@ -699,7 +699,7 @@ _Timer_timeToString:
 	MOVWF       R0 
 	MOVLW       10
 	MOVWF       R4 
-	CALL        _Div_8x8_U+0, 0
+	CALL        _Div_8X8_U+0, 0
 	MOVF        R8, 0 
 	MOVWF       R0 
 	MOVLW       48

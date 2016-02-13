@@ -213,7 +213,7 @@ _Storage_writeLog:
 	MOVWF       R0 
 	MOVLW       240
 	MOVWF       R4 
-	CALL        _Div_8x8_U+0, 0
+	CALL        _Div_8X8_U+0, 0
 	MOVF        R8, 0 
 	MOVWF       R0 
 	MOVLW       16
@@ -232,7 +232,7 @@ _Storage_writeLog:
 	MOVWF       R0 
 	MOVLW       240
 	MOVWF       R4 
-	CALL        _Div_8x8_U+0, 0
+	CALL        _Div_8X8_U+0, 0
 	MOVF        R8, 0 
 	MOVWF       R0 
 	MOVLW       16
@@ -272,7 +272,7 @@ L_Storage_readEarliestLog8:
 	MOVWF       R0 
 	MOVLW       240
 	MOVWF       R4 
-	CALL        _Div_8x8_U+0, 0
+	CALL        _Div_8X8_U+0, 0
 	MOVF        R8, 0 
 	MOVWF       R0 
 	MOVLW       16

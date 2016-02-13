@@ -27,15 +27,15 @@ L__intToString42:
 	BTFSC       STATUS+0, 0 
 	GOTO        L_intToString0
 	MOVLW       1
-	MOVWF       R0 
+	MOVWF       ?FLOC___intToStringT1+0 
 	GOTO        L_intToString1
 L_intToString0:
-	CLRF        R0 
+	CLRF        ?FLOC___intToStringT1+0 
 L_intToString1:
-	MOVF        R0, 0 
+	MOVF        ?FLOC___intToStringT1+0, 0 
 	MOVWF       intToString_isNegative_L0+0 
 ;NumberToString.c,14 :: 		if(isNegative) value = -value;
-	MOVF        R0, 1 
+	MOVF        ?FLOC___intToStringT1+0, 1 
 	BTFSC       STATUS+0, 2 
 	GOTO        L_intToString2
 	CLRF        R0 
@@ -251,6 +251,8 @@ _floatToString:
 	MOVLW       0
 	BTFSC       floatToString__value_L0+3, 7 
 	MOVLW       255
+	MOVWF       R1 
+	MOVWF       R2 
 	MOVWF       R3 
 	MOVLW       127
 	SUBWF       R0, 0 
@@ -588,9 +590,9 @@ L_floatToString24:
 	BTFSC       STATUS+0, 2 
 	GOTO        L_floatToString26
 	MOVF        FARG_floatToString_precision+0, 0 
-	MOVWF       R2 
+	MOVWF       ?FLOC___floatToStringT69+0 
 	MOVLW       0
-	MOVWF       R3 
+	MOVWF       ?FLOC___floatToStringT69+1 
 	GOTO        L_floatToString27
 L_floatToString26:
 	MOVLW       floatToString_result_L0+0
@@ -601,17 +603,15 @@ L_floatToString26:
 	MOVWF       R1 
 	MOVF        R0, 0 
 	SUBLW       15
-	MOVWF       R0 
-	DECF        R0, 1 
-	MOVF        R0, 0 
-	MOVWF       R2 
+	MOVWF       ?FLOC___floatToStringT69+0 
+	DECF        ?FLOC___floatToStringT69+0, 1 
 	MOVLW       0
-	MOVWF       R3 
+	MOVWF       ?FLOC___floatToStringT69+1 
 L_floatToString27:
-	MOVF        R2, 0 
+	MOVF        ?FLOC___floatToStringT69+0, 0 
 	MOVWF       floatToString_max_length_L0+0 
 ;NumberToString.c,89 :: 		if(max_length > 7) max_length = 7;
-	MOVF        R2, 0 
+	MOVF        ?FLOC___floatToStringT69+0, 0 
 	SUBLW       7
 	BTFSC       STATUS+0, 0 
 	GOTO        L_floatToString28
@@ -682,6 +682,8 @@ L__floatToString55:
 	MOVLW       0
 	BTFSC       R8, 7 
 	MOVLW       255
+	MOVWF       R1 
+	MOVWF       R2 
 	MOVWF       R3 
 	MOVLW       48
 	ADDWF       R0, 1 

@@ -44,8 +44,10 @@ typedef unsigned int uintptr_t;
 typedef signed long int intmax_t;
 typedef unsigned long int uintmax_t;
 #line 1 "c:/program files (x86)/mikroelektronika/mikroc pro for pic/include/stdbool.h"
-#line 10 "c:/program files (x86)/mikroelektronika/mikroc pro for pic/include/stdbool.h"
-typedef unsigned char _Bool;
+
+
+
+ typedef char _Bool;
 #line 1 "c:/program files (x86)/mikroelektronika/mikroc pro for pic/include/stdarg.h"
 
 
